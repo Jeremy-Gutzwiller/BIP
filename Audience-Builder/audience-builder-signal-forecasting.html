@@ -1,0 +1,763 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Buyer Intent — Audience Builder</title>
+<link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700;800;900&display=swap" rel="stylesheet"/>
+<style>
+  :root {
+    --p:#5746b2; --ph:#4535a0; --o:#ff492c;
+    --t1:#1a1a2e; --t2:#49495a; --t3:#8b8fa8;
+    --bg:#f5f4fb; --card:#ffffff; --subtle:#f8f7ff;
+    --bl:#f0eeff; --bxl:#fafafe;
+    --bd:#e5e3f0; --bb:#ddd8f8; --bbm:#c4bbf0; --bbs:#b0afb6;
+    --ff:'Figtree',sans-serif;
+    --shc:0 4px 20px rgba(87,70,178,0.1);
+    --shd:0 8px 24px rgba(0,0,0,0.1);
+  }
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+  body{font-family:var(--ff);background:var(--bg);min-height:100vh;color:var(--t1);}
+  .page{max-width:1080px;margin:0 auto;padding:40px 40px 80px;}
+
+  /* TABS */
+  .page-title{font-size:26px;font-weight:800;color:var(--t1);margin-bottom:20px;letter-spacing:-0.01em;line-height:1.2;}
+  .tab-bar{display:flex;border-bottom:1.5px solid var(--bd);margin-bottom:6px;}
+  .tab{padding:10px 0;margin-right:28px;font-size:13px;font-weight:600;color:var(--t3);cursor:pointer;border-bottom:2.5px solid transparent;margin-bottom:-1.5px;transition:color .15s,border-color .15s;background:none;border-top:none;border-left:none;border-right:none;font-family:var(--ff);white-space:nowrap;}
+  .tab:hover{color:var(--t2);}
+  .tab.active{color:var(--o);border-bottom-color:var(--o);}
+  .page-subtitle{font-size:13px;color:var(--t3);margin-bottom:28px;margin-top:8px;line-height:1.5;}
+
+  /* BUTTONS */
+  .btn{font-family:var(--ff);font-weight:600;border-radius:9999px;border:none;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;gap:6px;transition:background .12s,color .12s,border-color .12s;white-space:nowrap;}
+  .btn-sm{height:32px;padding:0 16px;font-size:13px;}
+  .btn-md{height:40px;padding:0 20px;font-size:14px;}
+  .btn-primary{background:var(--p);color:#fff;}
+  .btn-primary:hover{background:var(--ph);}
+  .btn-primary:disabled{opacity:.4;cursor:not-allowed;pointer-events:none;}
+  .btn-secondary{background:#fafafa;color:var(--p);border:.5px solid var(--bbs);}
+  .btn-secondary:hover{background:var(--bl);border-color:var(--p);}
+
+  /* BADGES */
+  .badge{display:inline-flex;align-items:center;gap:5px;font-size:10px;font-weight:700;padding:3px 9px;border-radius:9999px;font-family:var(--ff);text-transform:uppercase;letter-spacing:.08em;white-space:nowrap;}
+  .badge-icp{background:#edfaf4;color:#1a7a52;border:1px solid #b8e8cf;}
+  .badge-anti{background:#fef1f1;color:#b52f2f;border:1px solid #fac8c8;}
+  .badge-int{background:var(--bl);color:var(--p);border:1px solid var(--bb);}
+  .badge-opt{background:var(--subtle);color:var(--t3);border:1px solid var(--bd);}
+  .badge-preview{background:var(--subtle);color:var(--t3);border:1px solid var(--bd);}
+
+  /* CARD */
+  .card{background:var(--card);border:1.5px solid var(--bd);border-radius:12px;overflow:hidden;}
+  .card-header{padding:14px 20px;border-bottom:1px solid var(--bl);display:flex;align-items:center;justify-content:space-between;}
+  .card-header-left{display:flex;align-items:center;gap:10px;}
+  .card-title{font-size:14px;font-weight:700;color:var(--t1);}
+  .card-desc{font-size:12px;color:var(--t3);margin-top:1px;}
+  .card-body{padding:20px;}
+
+  /* UNSAVED BANNER */
+  .unsaved-banner{display:none;align-items:center;justify-content:space-between;background:#fff8ec;border:1px solid #fde2a3;border-radius:10px;padding:10px 16px;margin-bottom:20px;font-size:13px;color:#92600a;}
+  .unsaved-banner.visible{display:flex;}
+
+  /* SAVE BAR */
+  .save-bar{display:flex;align-items:center;justify-content:space-between;margin-bottom:24px;gap:16px;}
+  .save-bar-left{flex:1;min-width:0;}
+  .audience-name-row{display:flex;align-items:center;gap:8px;margin-bottom:4px;}
+  .audience-name-input{font-family:var(--ff);font-size:17px;font-weight:800;color:var(--t1);border:none;border-bottom:2px solid transparent;background:transparent;outline:none;padding:2px 4px;border-radius:4px;transition:border-color .15s,background .15s;min-width:180px;max-width:420px;}
+  .audience-name-input:hover{border-bottom-color:var(--bbm);}
+  .audience-name-input:focus{border-bottom-color:var(--p);background:var(--bxl);}
+  .name-edit-hint{font-size:11px;color:var(--t3);}
+  .save-meta{font-size:12px;color:var(--t3);display:flex;align-items:center;gap:6px;}
+  .save-meta-dot{width:3px;height:3px;border-radius:50%;background:var(--bbm);}
+  .save-bar-right{display:flex;align-items:center;gap:10px;flex-shrink:0;}
+  .status-pill{display:inline-flex;align-items:center;gap:6px;font-size:10px;font-weight:700;padding:5px 12px;border-radius:9999px;text-transform:uppercase;letter-spacing:.05em;}
+  .status-pill.active{background:#edfaf4;color:#1a7a52;border:1px solid #b8e8cf;}
+  .status-pill.unsaved{background:#fff8ec;color:#92600a;border:1px solid #fde2a3;}
+  .status-dot{width:6px;height:6px;border-radius:50%;}
+  .status-dot.green{background:#2eb57a;}
+  .status-dot.amber{background:#f59e0b;}
+
+  /* IMPACT BAR */
+  .impact-bar{display:flex;align-items:center;gap:12px;margin-bottom:16px;background:var(--card);border:1.5px solid var(--bd);border-radius:10px;padding:12px 18px;}
+  .impact-stat{display:flex;flex-direction:column;gap:2px;}
+  .impact-value{font-size:20px;font-weight:800;color:var(--t1);line-height:1;}
+  .impact-value.green{color:#1a7a52;}
+  .impact-value.red{color:#b52f2f;}
+  .impact-label{font-size:11px;color:var(--t3);font-weight:500;}
+  .impact-divider{width:1px;height:32px;background:var(--bd);flex-shrink:0;}
+  .impact-spacer{flex:1;}
+  .impact-note{font-size:12px;color:var(--t3);display:flex;align-items:center;gap:6px;}
+  .impact-note strong{color:var(--t2);font-weight:600;}
+  .match-bar-wrap{flex:1;max-width:200px;}
+  .match-bar-track{height:6px;background:var(--bd);border-radius:9999px;overflow:hidden;}
+  .match-bar-fill{height:100%;background:linear-gradient(90deg,#2eb57a,#5746b2);border-radius:9999px;transition:width .4s ease;}
+  .match-bar-label{font-size:11px;color:var(--t3);margin-top:4px;}
+
+  /* TWO COL */
+  .two-col{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px;}
+
+  /* FILTER ROWS */
+  .filter-row{padding:14px 0;border-bottom:1px solid var(--bd);}
+  .filter-row:first-child{padding-top:0;}
+  .filter-row:last-child{border-bottom:none;padding-bottom:0;}
+  .filter-row-header{display:flex;align-items:baseline;gap:8px;margin-bottom:10px;}
+  .filter-row-icon{font-size:14px;line-height:1;}
+  .filter-row-label{font-size:13px;font-weight:700;color:var(--t1);}
+  .filter-row-hint{font-size:12px;color:var(--t3);font-weight:400;}
+  .pill-group{display:flex;flex-wrap:wrap;gap:6px;}
+  .pill-toggle{font-family:var(--ff);font-size:12px;font-weight:600;padding:5px 14px;border-radius:9999px;cursor:pointer;border:1.5px solid var(--bd);background:var(--card);color:var(--t2);transition:all .12s;}
+  .pill-toggle:hover{border-color:var(--bbm);color:var(--t1);}
+  .pill-toggle.active-icp{background:#edfaf4;border-color:#2eb57a;color:#1a7a52;}
+  .pill-toggle.active-anti{background:#fef1f1;border-color:#e55353;color:#b52f2f;}
+
+  /* DROPDOWN */
+  .dd-wrap{position:relative;}
+  .dd-trigger{border:1.5px solid var(--bd);border-radius:8px;padding:8px 12px;cursor:pointer;background:var(--bxl);display:flex;justify-content:space-between;align-items:center;font-size:13px;color:var(--t3);font-family:var(--ff);user-select:none;transition:border-color .15s,background .15s;max-width:260px;}
+  .dd-trigger:hover{border-color:var(--bbm);background:var(--card);}
+  .dd-trigger.has-val{color:var(--t1);background:var(--card);}
+  .dd-trigger.open-icp{border-color:#2eb57a;background:var(--card);}
+  .dd-trigger.open-anti{border-color:#e55353;background:var(--card);}
+  .dd-arrow{font-size:9px;color:var(--t3);transition:transform .15s;margin-left:8px;flex-shrink:0;}
+  .dd-arrow.flipped{transform:rotate(180deg);}
+  .dd-menu{position:absolute;top:calc(100% + 4px);left:0;width:260px;background:var(--card);border:1.5px solid var(--bd);border-radius:10px;box-shadow:var(--shd);z-index:200;max-height:200px;overflow-y:auto;display:none;}
+  .dd-menu.open{display:block;}
+  .dd-search{padding:8px 12px;border-bottom:1px solid var(--bd);}
+  .dd-search input{width:100%;border:none;outline:none;font-size:13px;font-family:var(--ff);color:var(--t1);background:transparent;}
+  .dd-opt{padding:8px 12px;cursor:pointer;display:flex;align-items:center;gap:10px;font-size:13px;color:var(--t1);transition:background .08s;}
+  .dd-opt:hover{background:var(--subtle);}
+  .dd-opt.sel-icp{background:#edfaf4;color:#1a7a52;}
+  .dd-opt.sel-anti{background:#fef1f1;color:#b52f2f;}
+  .dd-cb{width:15px;height:15px;border-radius:4px;border:2px solid var(--bbm);background:transparent;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+  .dd-cb.chk-icp{border-color:#2eb57a;background:#2eb57a;}
+  .dd-cb.chk-anti{border-color:#e55353;background:#e55353;}
+  .dd-ck{color:#fff;font-size:8px;font-weight:700;display:none;}
+  .dd-cb.chk-icp .dd-ck,.dd-cb.chk-anti .dd-ck{display:block;}
+
+  /* RANGE */
+  .range-row{display:flex;align-items:center;gap:10px;max-width:480px;}
+  .range-arrow{font-size:12px;color:var(--t3);flex-shrink:0;}
+  .range-select{flex:1;border:1.5px solid var(--bd);border-radius:8px;padding:8px 12px;font-size:13px;font-family:var(--ff);color:var(--t3);background:var(--bxl);cursor:pointer;appearance:none;outline:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%238b8fa8' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 12px center;padding-right:32px;transition:border-color .15s;}
+  .range-select:focus{border-color:var(--bbm);}
+  .range-select.has-val{color:var(--t1);}
+
+  /* TAGS */
+  .tags-row{display:flex;flex-wrap:wrap;gap:5px;margin-top:10px;}
+  .tag{display:inline-flex;align-items:center;gap:4px;border-radius:9999px;padding:3px 8px 3px 7px;font-size:11px;font-weight:600;border:1px solid;}
+  .tag-icp{background:#edfaf4;border-color:#2eb57a;color:#1a7a52;}
+  .tag-anti{background:#fef1f1;border-color:#e55353;color:#b52f2f;}
+  .tag-dot{width:5px;height:5px;border-radius:50%;flex-shrink:0;}
+  .tag-dot-icp{background:#2eb57a;}
+  .tag-dot-anti{background:#e55353;}
+  .tag-rm{background:none;border:none;cursor:pointer;font-size:13px;line-height:1;padding:0;margin-left:1px;opacity:.5;}
+  .tag-icp .tag-rm{color:#1a7a52;}
+  .tag-anti .tag-rm{color:#b52f2f;}
+
+  /* ADDITIONAL FILTERS */
+  .additional-toggle{display:inline-flex;align-items:center;gap:7px;font-size:11px;font-weight:700;color:var(--p);text-transform:uppercase;letter-spacing:.08em;cursor:pointer;background:none;border:1.5px solid var(--bb);border-radius:6px;padding:5px 10px;margin-top:14px;font-family:var(--ff);transition:background .12s;}
+  .additional-toggle:hover{background:var(--bl);}
+  .additional-toggle.open{background:var(--bl);}
+  .add-arrow{font-size:8px;transition:transform .2s;}
+  .add-arrow.flipped{transform:rotate(180deg);}
+  .additional-body{display:none;margin-top:4px;}
+  .additional-body.open{display:block;}
+
+  /* ANTI VALUE PROP */
+  .anti-vp{display:flex;align-items:flex-start;gap:8px;background:#fff8f1;border:1px solid #fde2c0;border-radius:8px;padding:10px 12px;margin-bottom:14px;}
+  .anti-vp p{font-size:12px;color:#92600a;line-height:1.5;}
+  .anti-vp strong{font-weight:700;}
+
+  /* INTEGRATIONS */
+  .int-section{margin-bottom:4px;border:1.5px solid var(--bd);border-radius:10px;overflow:hidden;}
+  .int-section:last-child{margin-bottom:0;}
+  .int-section-toggle{width:100%;display:flex;align-items:center;justify-content:space-between;padding:11px 16px;background:var(--bxl);border:none;cursor:pointer;font-family:var(--ff);transition:background .12s;}
+  .int-section-toggle:hover{background:var(--bl);}
+  .int-section-toggle.open{background:var(--bl);}
+  .int-section-left{display:flex;align-items:center;gap:8px;}
+  .int-section-name{font-size:11px;font-weight:700;color:var(--t2);text-transform:uppercase;letter-spacing:.08em;}
+  .int-count-pill{font-size:10px;font-weight:700;padding:1px 7px;border-radius:9999px;background:var(--bl);color:var(--p);border:1px solid var(--bb);}
+  .int-selected-pill{font-size:10px;font-weight:700;padding:1px 7px;border-radius:9999px;background:#edfaf4;color:#1a7a52;border:1px solid #b8e8cf;}
+  .int-section-arrow{font-size:9px;color:var(--t3);transition:transform .2s;}
+  .int-section-arrow.flipped{transform:rotate(180deg);}
+  .int-grid-wrap{padding:12px 16px 14px;display:none;border-top:1px solid var(--bd);}
+  .int-grid-wrap.open{display:block;}
+  .int-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;}
+  .int-card{border:1.5px solid var(--bd);border-radius:10px;padding:11px 12px 10px;cursor:pointer;background:var(--card);transition:border-color .15s,box-shadow .15s;display:flex;flex-direction:column;align-items:flex-start;gap:5px;position:relative;}
+  .int-card:hover:not(.int-disabled){border-color:var(--bbm);box-shadow:var(--shc);}
+  .int-card.int-active{border-color:var(--p);background:var(--bl);}
+  .int-card.int-disabled{opacity:.38;cursor:default;background:var(--bxl);}
+  .int-icon{font-size:18px;line-height:1;}
+  .int-name{font-size:11px;font-weight:600;color:var(--t1);line-height:1.3;}
+  .int-card.int-active .int-name{color:var(--p);}
+  .int-card.int-disabled .int-name{color:var(--t3);}
+  .not-setup{font-size:9px;font-weight:700;color:var(--t3);text-transform:uppercase;letter-spacing:.05em;}
+  .int-check{position:absolute;top:8px;right:8px;width:14px;height:14px;border-radius:4px;border:1.5px solid var(--bbm);background:transparent;display:flex;align-items:center;justify-content:center;transition:all .15s;}
+  .int-card.int-active .int-check{border-color:var(--p);background:var(--p);}
+  .int-ck{color:#fff;font-size:8px;font-weight:700;display:none;}
+  .int-card.int-active .int-ck{display:block;}
+  .int-header-meta{font-size:12px;color:var(--t3);display:flex;align-items:center;gap:8px;}
+  .int-tooltip{position:relative;}
+  .int-tooltip-icon{font-size:10px;color:var(--t3);cursor:help;margin-left:2px;}
+  .int-tooltip-box{display:none;position:absolute;bottom:calc(100% + 6px);left:50%;transform:translateX(-50%);background:var(--t1);color:#fff;font-size:11px;padding:6px 10px;border-radius:6px;z-index:300;pointer-events:none;line-height:1.4;max-width:200px;white-space:normal;text-align:center;}
+  .int-tooltip:hover .int-tooltip-box{display:block;}
+
+  /* PREVIEW */
+  .preview-table{width:100%;border-collapse:collapse;}
+  .preview-table th{font-size:10px;font-weight:700;color:var(--t3);text-transform:uppercase;letter-spacing:.08em;padding:10px 20px;text-align:left;border-bottom:1px solid var(--bl);background:var(--bxl);}
+  .preview-table td{padding:11px 20px;font-size:13px;color:var(--t2);border-bottom:1px solid var(--subtle);vertical-align:top;}
+  .preview-table tr:last-child td{border-bottom:none;}
+  .company-name{font-weight:600;font-size:13px;color:var(--t1);}
+  .company-meta{font-size:11px;color:var(--t3);margin-top:1px;}
+  .route-pill{display:inline-flex;align-items:center;gap:5px;font-size:11px;font-weight:600;padding:3px 10px;border-radius:9999px;}
+  .route-pass{background:#edfaf4;color:#1a7a52;}
+  .route-fail{background:var(--subtle);color:var(--t3);}
+  .route-exclude{background:#fef1f1;color:#b52f2f;}
+  .preview-note{font-size:12px;color:var(--t3);padding:10px 20px 12px;border-top:1px solid var(--subtle);display:flex;align-items:center;gap:6px;}
+
+  /* SAVE MODAL */
+  .modal-overlay{display:none;position:fixed;inset:0;background:rgba(26,26,46,.4);z-index:500;align-items:center;justify-content:center;}
+  .modal-overlay.visible{display:flex;}
+  .modal-box{background:#fff;border-radius:16px;padding:28px;width:100%;max-width:440px;box-shadow:0 24px 60px rgba(0,0,0,.18);}
+  .modal-box h3{font-size:17px;font-weight:800;color:var(--t1);margin-bottom:6px;}
+  .modal-sub{font-size:13px;color:var(--t3);margin-bottom:20px;}
+  .modal-stats{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px;}
+  .modal-stat{background:var(--subtle);border-radius:8px;padding:12px 14px;}
+  .modal-stat-val{font-size:22px;font-weight:800;line-height:1;margin-bottom:3px;}
+  .modal-stat-val.green{color:#1a7a52;}
+  .modal-stat-val.red{color:#b52f2f;}
+  .modal-stat-lbl{font-size:11px;color:var(--t3);font-weight:500;}
+  .modal-int-block{background:var(--subtle);border-radius:8px;padding:10px 14px;margin-bottom:20px;}
+  .modal-int-label{font-size:10px;font-weight:700;color:var(--t3);text-transform:uppercase;letter-spacing:.08em;margin-bottom:8px;}
+  .modal-int-chips{display:flex;flex-wrap:wrap;gap:6px;}
+  .int-chip{display:inline-flex;align-items:center;gap:5px;font-size:12px;font-weight:600;padding:3px 10px;border-radius:9999px;background:#fff;border:1.5px solid var(--bb);color:var(--p);}
+  .modal-footer{display:flex;gap:10px;justify-content:flex-end;}
+
+  /* TOAST */
+  .toast{position:fixed;bottom:28px;right:28px;background:var(--t1);color:#fff;padding:12px 20px;border-radius:10px;font-size:13px;font-weight:600;box-shadow:0 8px 24px rgba(0,0,0,.15);display:flex;align-items:center;gap:8px;opacity:0;transform:translateY(8px);transition:opacity .2s,transform .2s;pointer-events:none;z-index:1000;}
+  .toast.show{opacity:1;transform:translateY(0);}
+
+  .dd-menu::-webkit-scrollbar{width:4px;}
+  .dd-menu::-webkit-scrollbar-thumb{background:var(--bd);border-radius:4px;}
+</style>
+</head>
+<body>
+<div class="page">
+  <div class="page-title">Buyer Intent</div>
+  <div class="tab-bar">
+    <button class="tab" onclick="switchTab(this,'signals')">Intent Signals</button>
+    <button class="tab" onclick="switchTab(this,'churn')">Churn Risks</button>
+    <button class="tab active" onclick="switchTab(this,'audience')">Audience Builder</button>
+  </div>
+  <div class="page-subtitle" id="page-subtitle">Configure which companies receive your Buyer Intent signals · Filters apply before delivery to integrations</div>
+
+  <div id="ab-content">
+
+    <!-- UNSAVED BANNER -->
+    <div class="unsaved-banner" id="unsaved-banner">
+      <span>⚠ &nbsp;<strong>Unsaved changes</strong> — your configuration hasn't been applied yet.</span>
+      <button class="btn btn-sm btn-primary" onclick="requestSave()" style="height:28px;padding:0 14px;font-size:12px;">Review &amp; Save</button>
+    </div>
+
+    <!-- SAVE BAR -->
+    <div class="save-bar">
+      <div class="save-bar-left">
+        <div class="audience-name-row">
+          <input class="audience-name-input" id="audience-name" value="My Audience" maxlength="60"/>
+          <span class="name-edit-hint">✏ rename</span>
+        </div>
+        <div class="save-meta">
+          <span id="save-timestamp">Never saved</span>
+          <span class="save-meta-dot"></span>
+          <span id="save-int-summary">No integrations selected</span>
+        </div>
+      </div>
+      <div class="save-bar-right">
+        <div class="status-pill unsaved" id="status-pill">
+          <span class="status-dot amber" id="status-dot"></span>
+          <span id="status-text">Not saved</span>
+        </div>
+        <button class="btn btn-md btn-secondary" onclick="requestSave()" id="btn-save" disabled>Review &amp; Save</button>
+      </div>
+    </div>
+
+    <!-- IMPACT BAR -->
+    <div class="impact-bar">
+      <div class="impact-stat">
+        <div class="impact-value green" id="impact-match">100%</div>
+        <div class="impact-label">signals match ICP</div>
+      </div>
+      <div class="impact-divider"></div>
+      <div class="impact-stat">
+        <div class="impact-value" id="impact-routed">~4,200</div>
+        <div class="impact-label">signals / mo routed</div>
+      </div>
+      <div class="impact-divider"></div>
+      <div class="impact-stat">
+        <div class="impact-value red" id="impact-filtered">0</div>
+        <div class="impact-label">signals / mo filtered</div>
+      </div>
+      <div class="impact-divider"></div>
+      <div class="match-bar-wrap">
+        <div class="match-bar-track"><div class="match-bar-fill" id="match-bar-fill" style="width:100%"></div></div>
+        <div class="match-bar-label" id="match-bar-label">All signals passing</div>
+      </div>
+      <div class="impact-spacer"></div>
+      <div class="impact-note"><span>📅</span><span>Based on your last <strong>30 days</strong> of signals</span></div>
+    </div>
+
+    <!-- ICP + ANTI-ICP -->
+    <div class="two-col">
+      <div class="card">
+        <div class="card-header">
+          <div class="card-header-left">
+            <span class="badge badge-icp">ICP</span>
+            <div><div class="card-title">Target Accounts</div><div class="card-desc">Companies you want signals for</div></div>
+          </div>
+        </div>
+        <div class="card-body" id="icp-body"></div>
+      </div>
+      <div class="card">
+        <div class="card-header">
+          <div class="card-header-left">
+            <span class="badge badge-anti">Anti-ICP</span>
+            <div><div class="card-title">Excluded Accounts</div><div class="card-desc">Reduce signal noise before it hits your CRM</div></div>
+          </div>
+          <span class="badge badge-opt">Optional</span>
+        </div>
+        <div class="card-body" id="anti-body"></div>
+      </div>
+    </div>
+
+    <!-- INTEGRATIONS -->
+    <div class="card" style="margin-bottom:16px;">
+      <div class="card-header">
+        <div class="card-header-left">
+          <span class="badge badge-int">Integrations</span>
+          <div><div class="card-title">Apply Filters To</div><div class="card-desc">Signals are stopped entirely for non-matching accounts — no record created in destination</div></div>
+        </div>
+        <div class="int-header-meta">
+          <span style="display:flex;align-items:center;gap:4px;">
+            <span style="width:6px;height:6px;border-radius:50%;background:#2eb57a;display:inline-block;"></span>
+            <span id="connected-count">8</span> connected
+          </span>
+          <span style="color:var(--bd);">·</span>
+          <span id="selected-count">0</span> selected
+        </div>
+      </div>
+      <div class="card-body" style="padding:12px 16px;" id="int-body"></div>
+    </div>
+
+    <!-- SIGNAL PREVIEW -->
+    <div class="card">
+      <div class="card-header">
+        <div class="card-header-left">
+          <span class="badge badge-preview">Live Preview</span>
+          <div><div class="card-title">Signal Routing Preview</div><div class="card-desc">Your 10 most recent signals — shows how your current filters apply</div></div>
+        </div>
+      </div>
+      <table class="preview-table">
+        <thead><tr><th>Company</th><th>Industry</th><th>Region</th><th>Employees</th><th>Routing Status</th></tr></thead>
+        <tbody id="preview-body"></tbody>
+      </table>
+      <div class="preview-note">ℹ️ Showing your 10 most recent signals from the last 7 days. Routing status updates live as you adjust filters.</div>
+    </div>
+
+  </div>
+</div>
+
+<!-- SAVE IMPACT MODAL -->
+<div class="modal-overlay" id="save-modal">
+  <div class="modal-box">
+    <h3>Review Changes Before Saving</h3>
+    <p class="modal-sub">This will immediately affect how signals are delivered to your integrations.</p>
+    <div class="modal-stats">
+      <div class="modal-stat"><div class="modal-stat-val green" id="modal-routed">—</div><div class="modal-stat-lbl">signals / mo will be routed</div></div>
+      <div class="modal-stat"><div class="modal-stat-val red" id="modal-filtered">—</div><div class="modal-stat-lbl">signals / mo will be filtered</div></div>
+    </div>
+    <div class="modal-int-block">
+      <div class="modal-int-label">Applying to integrations</div>
+      <div class="modal-int-chips" id="modal-int-chips"></div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-md btn-secondary" onclick="closeModal()">Cancel</button>
+      <button class="btn btn-md btn-primary" onclick="confirmSave()">Confirm &amp; Save</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const REGIONS=['North America','EMEA','APAC','LATAM'];
+const INDUSTRIES=['Healthcare','Finance','Technology','Legal','Manufacturing','Retail','Education','Government','Media','Real Estate','Consulting','Insurance','Logistics','Energy','Telecom'];
+const EMP_MIN=['Any','1','51','201','501','1,001','5,001'];
+const EMP_MAX=['Any','50','200','500','1,000','5,000','5,000+'];
+const TOTAL_MONTHLY=4200;
+
+const PREVIEW_COMPANIES=[
+  {name:'Advocate Aurora Health',meta:'advocateaurorahealth.org',industry:'Healthcare',region:'North America',employees:'5,000+'},
+  {name:'Lightspeed Commerce',meta:'lightspeedhq.com',industry:'Technology',region:'North America',employees:'1,001–5,000'},
+  {name:'Clifford Chance LLP',meta:'cliffordchance.com',industry:'Legal',region:'EMEA',employees:'1,001–5,000'},
+  {name:'Mercado Libre',meta:'mercadolibre.com',industry:'Retail',region:'LATAM',employees:'5,000+'},
+  {name:'DBS Bank',meta:'dbs.com',industry:'Finance',region:'APAC',employees:'5,000+'},
+  {name:'Honest Medical Group',meta:'honestmedicalgroup.com',industry:'Healthcare',region:'North America',employees:'201–500'},
+  {name:'Linklaters',meta:'linklaters.com',industry:'Legal',region:'EMEA',employees:'1,001–5,000'},
+  {name:'Deel Inc.',meta:'deel.com',industry:'Technology',region:'North America',employees:'1,001–5,000'},
+  {name:'Grupo Bimbo',meta:'grupobimbo.com',industry:'Manufacturing',region:'LATAM',employees:'5,000+'},
+  {name:'Kasikornbank',meta:'kasikornbank.com',industry:'Finance',region:'APAC',employees:'5,000+'},
+];
+
+const INT_CATEGORIES=[
+  {id:'crm',label:'CRM',open:true,integrations:[
+    {id:'sf',name:'Salesforce',icon:'☁️',connected:true},
+    {id:'hubspot',name:'HubSpot',icon:'🟠',connected:true},
+    {id:'pipedrive',name:'Pipedrive',icon:'🟢',connected:false},
+  ]},
+  {id:'abm',label:'ABM & Advertising',open:false,integrations:[
+    {id:'6sense',name:'6sense',icon:'⬡',connected:false},
+    {id:'adroll',name:'AdRoll ABM',icon:'📣',connected:false},
+    {id:'demandbase',name:'Demandbase One',icon:'◈',connected:false},
+    {id:'bombora',name:'Bombora Surge',icon:'🔷',connected:false},
+    {id:'foundry',name:'Foundry ABM',icon:'🏗️',connected:false},
+    {id:'linkedin-ma',name:'LinkedIn Matched Aud.',icon:'🔗',connected:true},
+    {id:'terminus',name:'Terminus',icon:'📐',connected:false},
+    {id:'metadata',name:'Metadata.io',icon:'⬛',connected:true},
+  ]},
+  {id:'mktg',label:'Marketing Automation',open:false,integrations:[
+    {id:'marketo',name:'Adobe Marketo',icon:'🔵',connected:false},
+    {id:'infuse',name:'INFUSE',icon:'💧',connected:false},
+  ]},
+  {id:'sales',label:'Sales Intelligence & Engagement',open:false,integrations:[
+    {id:'linkedin-sn',name:'LinkedIn Sales Nav',icon:'💼',connected:true},
+    {id:'zoominfo',name:'ZoomInfo',icon:'🔍',connected:true},
+    {id:'zoominfo-o',name:'ZoomInfo Ops',icon:'🔍',connected:false},
+    {id:'zoominfo-s',name:'ZoomInfo Contacts',icon:'🔍',connected:false},
+    {id:'salesloft',name:'Salesloft',icon:'⚡',connected:false},
+    {id:'gong',name:'Gong',icon:'🔔',connected:true},
+    {id:'outreach',name:'Outreach',icon:'📤',connected:false},
+    {id:'hockeystack',name:'Hockeystack',icon:'📊',connected:false},
+    {id:'dreamdata',name:'Dreamdata',icon:'💎',connected:false},
+  ]},
+  {id:'data',label:'Data Integrations',open:false,integrations:[
+    {id:'snowflake',name:'Snowflake',icon:'❄️',connected:true},
+    {id:'sheets',name:'Google Sheets',icon:'📗',connected:false},
+    {id:'apiv2',name:'API v2',icon:'⌥',connected:true},
+  ]},
+  {id:'cs',label:'Customer Success',open:false,integrations:[
+    {id:'gainsight',name:'Gainsight CS',icon:'🎯',connected:false},
+  ]},
+  {id:'notif',label:'Notifications',open:false,integrations:[
+    {id:'slack',name:'Slack',icon:'💬',connected:true},
+    {id:'teams',name:'Microsoft Teams',icon:'🟦',connected:false},
+  ]},
+];
+
+const INT_TOOLTIPS={
+  crm:'Non-matching signals are not synced — no account record created.',
+  abm:'Non-matching accounts are excluded from your ABM audiences.',
+  mktg:'Non-matching accounts are suppressed from automation workflows.',
+  sales:'Non-matching accounts are hidden from rep feeds and sequences.',
+  data:'Non-matching signals are dropped — not written to your data destination.',
+  cs:'Non-matching accounts are not surfaced in your CS platform.',
+  notif:'Notifications fire only for matching accounts.',
+};
+
+function allInts(){return INT_CATEGORIES.flatMap(c=>c.integrations);}
+
+let state={
+  icp:{regions:[],industries:[],empMin:'Any',empMax:'Any'},
+  anti:{regions:[],industries:[],empMin:'Any',empMax:'Any'},
+  icpAddOpen:false,antiAddOpen:false,
+  integrations:[],openDD:null,dirty:false,savedAt:null,
+};
+
+/* ── TOGGLES ── */
+function togglePill(type,key,val){const a=state[type][key];state[type][key]=a.includes(val)?a.filter(v=>v!==val):[...a,val];markDirty();}
+function toggleInt(id){const i=allInts().find(x=>x.id===id);if(!i||!i.connected)return;state.integrations=state.integrations.includes(id)?state.integrations.filter(x=>x!==id):[...state.integrations,id];markDirty();}
+function toggleIntSection(id){const c=INT_CATEGORIES.find(x=>x.id===id);if(c)c.open=!c.open;renderIntegrations();}
+function toggleIndustryDD(type,val){const a=state[type].industries;state[type].industries=a.includes(val)?a.filter(v=>v!==val):[...a,val];markDirty();}
+function setEmp(type,which,val){state[type][which]=val;markDirty();}
+function toggleAddFilters(type){if(type==='icp')state.icpAddOpen=!state.icpAddOpen;else state.antiAddOpen=!state.antiAddOpen;renderAll();}
+function markDirty(){state.dirty=true;renderAll();}
+
+/* ── IMPACT ── */
+function passes(c){
+  const{icp,anti}=state;
+  if((anti.industries.length&&anti.industries.includes(c.industry))||(anti.regions.length&&anti.regions.includes(c.region)))return'exclude';
+  return(!icp.industries.length||icp.industries.includes(c.industry))&&(!icp.regions.length||icp.regions.includes(c.region))?'pass':'fail';
+}
+function computeImpact(){
+  const pct=Math.round(PREVIEW_COMPANIES.filter(c=>passes(c)==='pass').length/PREVIEW_COMPANIES.length*100);
+  return{routed:Math.round(TOTAL_MONTHLY*pct/100),filtered:Math.round(TOTAL_MONTHLY*(100-pct)/100),pct};
+}
+
+/* ── INDUSTRY DROPDOWN ── */
+function buildIndustryDD(type){
+  const sel=state[type].industries,ddId='dd-'+type+'-industries',isOpen=state.openDD===ddId;
+  const wrap=document.createElement('div');wrap.className='dd-wrap';
+  const trig=document.createElement('div');
+  trig.className='dd-trigger'+(sel.length?' has-val':'')+(isOpen?' open-'+type:'');
+  const txt=document.createElement('span');txt.textContent=sel.length?sel.length+' selected':'Search industries...';
+  const arr=document.createElement('span');arr.className='dd-arrow'+(isOpen?' flipped':'');arr.textContent='▼';
+  trig.appendChild(txt);trig.appendChild(arr);
+  trig.addEventListener('click',e=>{e.stopPropagation();state.openDD=isOpen?null:ddId;renderAll();});
+  const menu=document.createElement('div');menu.className='dd-menu'+(isOpen?' open':'');
+  const sw=document.createElement('div');sw.className='dd-search';
+  const si=document.createElement('input');si.placeholder='Search...';si.addEventListener('click',e=>e.stopPropagation());
+  sw.appendChild(si);menu.appendChild(sw);
+  const list=document.createElement('div');
+  function bl(f=''){list.innerHTML='';INDUSTRIES.filter(i=>i.toLowerCase().includes(f.toLowerCase())).forEach(opt=>{
+    const isSel=sel.includes(opt);
+    const item=document.createElement('div');item.className='dd-opt'+(isSel?' sel-'+type:'');
+    const cb=document.createElement('div');cb.className='dd-cb'+(isSel?' chk-'+type:'');
+    const ck=document.createElement('span');ck.className='dd-ck';ck.textContent='✓';
+    cb.appendChild(ck);item.appendChild(cb);item.appendChild(document.createTextNode(opt));
+    item.addEventListener('click',e=>{e.stopPropagation();toggleIndustryDD(type,opt);});
+    list.appendChild(item);
+  });}
+  bl();si.addEventListener('input',()=>bl(si.value));
+  menu.appendChild(list);wrap.appendChild(trig);wrap.appendChild(menu);
+  return wrap;
+}
+
+/* ── FILTER PANEL ── */
+function renderFilterPanel(type){
+  const body=document.getElementById(type+'-body');body.innerHTML='';
+  const addOpen=type==='icp'?state.icpAddOpen:state.antiAddOpen;
+
+  if(type==='icp'){
+    const vp=document.createElement('div');vp.className='anti-vp';
+    vp.style.cssText='background:#f0f7ff;border-color:#bfdbfe;';
+    vp.innerHTML='<span style="font-size:14px;flex-shrink:0;margin-top:1px">🎯</span><p style="color:#1e4a8a;"><strong>Define who matters most.</strong> Only companies matching these criteria will be routed to your integrations — so your sales team spends time on the right accounts.</p>';
+    body.appendChild(vp);
+  }
+
+  if(type==='anti'){
+    const vp=document.createElement('div');vp.className='anti-vp';
+    vp.innerHTML='<span style="font-size:14px;flex-shrink:0;margin-top:1px">💡</span><p><strong>Stop noise before it starts.</strong> Companies matching these rules are dropped before reaching your CRM — keeping your pipeline clean and your reps focused.</p>';
+    body.appendChild(vp);
+  }
+
+  // Industry
+  const ir=document.createElement('div');ir.className='filter-row';
+  ir.innerHTML='<div class="filter-row-header"><span class="filter-row-icon">🏭</span><span class="filter-row-label">Industry</span><span class="filter-row-hint">Select one or more</span></div>';
+  ir.appendChild(buildIndustryDD(type));
+  if(state[type].industries.length){
+    const tags=document.createElement('div');tags.className='tags-row';
+    state[type].industries.forEach(v=>{
+      const tag=document.createElement('span');tag.className='tag tag-'+type;
+      const dot=document.createElement('span');dot.className='tag-dot tag-dot-'+type;
+      const rm=document.createElement('button');rm.className='tag-rm';rm.innerHTML='&times;';
+      rm.addEventListener('click',()=>toggleIndustryDD(type,v));
+      tag.appendChild(dot);tag.appendChild(document.createTextNode(v));tag.appendChild(rm);
+      tags.appendChild(tag);
+    });
+    ir.appendChild(tags);
+  }
+  body.appendChild(ir);
+
+  // Region
+  const rr=document.createElement('div');rr.className='filter-row';
+  rr.innerHTML='<div class="filter-row-header"><span class="filter-row-icon">🌎</span><span class="filter-row-label">Region</span><span class="filter-row-hint">Select one or more</span></div>';
+  const pg=document.createElement('div');pg.className='pill-group';
+  REGIONS.forEach(r=>{
+    const btn=document.createElement('button');
+    btn.className='pill-toggle'+(state[type].regions.includes(r)?' active-'+type:'');
+    btn.textContent=r;btn.addEventListener('click',()=>togglePill(type,'regions',r));
+    pg.appendChild(btn);
+  });
+  rr.appendChild(pg);body.appendChild(rr);
+
+  // Employee Count
+  const er=document.createElement('div');er.className='filter-row';
+  er.innerHTML='<div class="filter-row-header"><span class="filter-row-icon">👥</span><span class="filter-row-label">Employee Count</span><span class="filter-row-hint">Select a range</span></div>';
+  const rangeRow=document.createElement('div');rangeRow.className='range-row';
+  const minS=document.createElement('select');minS.className='range-select'+(state[type].empMin!=='Any'?' has-val':'');
+  const maxS=document.createElement('select');maxS.className='range-select'+(state[type].empMax!=='Any'?' has-val':'');
+  EMP_MIN.forEach(v=>{const o=document.createElement('option');o.value=v;o.textContent=v==='Any'?'Min employees':v+' employees';if(state[type].empMin===v)o.selected=true;minS.appendChild(o);});
+  EMP_MAX.forEach(v=>{const o=document.createElement('option');o.value=v;o.textContent=v==='Any'?'Max employees':v+' employees';if(state[type].empMax===v)o.selected=true;maxS.appendChild(o);});
+  minS.addEventListener('change',e=>setEmp(type,'empMin',e.target.value));
+  maxS.addEventListener('change',e=>setEmp(type,'empMax',e.target.value));
+  const ra=document.createElement('span');ra.className='range-arrow';ra.textContent='→';
+  rangeRow.appendChild(minS);rangeRow.appendChild(ra);rangeRow.appendChild(maxS);
+  er.appendChild(rangeRow);body.appendChild(er);
+
+  // Additional Filters toggle
+  const addBtn=document.createElement('button');
+  addBtn.className='additional-toggle'+(addOpen?' open':'');
+  addBtn.innerHTML='<span class="add-arrow'+(addOpen?' flipped':'')+'">▶</span> Additional Filters';
+  addBtn.addEventListener('click',()=>toggleAddFilters(type));
+  body.appendChild(addBtn);
+
+  const addBody=document.createElement('div');addBody.className='additional-body'+(addOpen?' open':'');
+
+  // Annual Revenue
+  const revRow=document.createElement('div');revRow.className='filter-row';revRow.style.marginTop='4px';
+  revRow.innerHTML='<div class="filter-row-header"><span class="filter-row-icon">💰</span><span class="filter-row-label">Annual Revenue</span><span class="filter-row-hint">Select a range</span></div>';
+  const revRR=document.createElement('div');revRR.className='range-row';
+  const minR=document.createElement('select');minR.className='range-select';
+  const maxR=document.createElement('select');maxR.className='range-select';
+  ['Any','< $1M','$1M–$10M','$10M–$50M','$50M–$200M','$200M–$1B','> $1B'].forEach(v=>{
+    const o1=document.createElement('option');o1.textContent=v==='Any'?'Min revenue':v;o1.value=v;minR.appendChild(o1);
+    const o2=document.createElement('option');o2.textContent=v==='Any'?'Max revenue':v;o2.value=v;maxR.appendChild(o2);
+  });
+  const rA=document.createElement('span');rA.className='range-arrow';rA.textContent='→';
+  revRR.appendChild(minR);revRR.appendChild(rA);revRR.appendChild(maxR);revRow.appendChild(revRR);addBody.appendChild(revRow);
+
+  // Country
+  const cRow=document.createElement('div');cRow.className='filter-row';
+  cRow.innerHTML='<div class="filter-row-header"><span class="filter-row-icon">🏳️</span><span class="filter-row-label">Country</span><span class="filter-row-hint">Select one or more</span></div><div class="dd-wrap"><div class="dd-trigger"><span>Search countries...</span><span class="dd-arrow">▼</span></div></div>';
+  addBody.appendChild(cRow);
+  body.appendChild(addBody);
+}
+
+/* ── INTEGRATIONS ── */
+function renderIntegrations(){
+  const body=document.getElementById('int-body');body.innerHTML='';
+  INT_CATEGORIES.forEach(cat=>{
+    const selInCat=cat.integrations.filter(i=>state.integrations.includes(i.id)).length;
+    const connInCat=cat.integrations.filter(i=>i.connected).length;
+    const section=document.createElement('div');section.className='int-section';
+    const toggle=document.createElement('button');toggle.className='int-section-toggle'+(cat.open?' open':'');
+    const left=document.createElement('div');left.className='int-section-left';
+    const arrow=document.createElement('span');arrow.className='int-section-arrow'+(cat.open?' flipped':'');arrow.textContent='▼';
+    const nm=document.createElement('span');nm.className='int-section-name';nm.textContent=cat.label;
+    const cp=document.createElement('span');cp.className='int-count-pill';cp.textContent=cat.integrations.length;
+    const tip=document.createElement('span');tip.className='int-tooltip';
+    const ti=document.createElement('span');ti.className='int-tooltip-icon';ti.textContent='ⓘ';
+    const tb=document.createElement('span');tb.className='int-tooltip-box';tb.textContent=INT_TOOLTIPS[cat.id]||'';
+    tip.appendChild(ti);tip.appendChild(tb);
+    left.appendChild(arrow);left.appendChild(nm);left.appendChild(cp);left.appendChild(tip);
+    if(selInCat>0){const sp=document.createElement('span');sp.className='int-selected-pill';sp.textContent=selInCat+' selected';left.appendChild(sp);}
+    toggle.appendChild(left);
+    if(connInCat>0&&!cat.open){const m=document.createElement('span');m.style.cssText='font-size:11px;color:var(--t3);';m.textContent=connInCat+' connected';toggle.appendChild(m);}
+    toggle.addEventListener('click',()=>toggleIntSection(cat.id));
+    section.appendChild(toggle);
+    const gw=document.createElement('div');gw.className='int-grid-wrap'+(cat.open?' open':'');
+    const g=document.createElement('div');g.className='int-grid';
+    cat.integrations.forEach(int=>{
+      const active=state.integrations.includes(int.id);
+      const card=document.createElement('div');card.className='int-card'+(active?' int-active':'')+(!int.connected?' int-disabled':'');
+      const chk=document.createElement('div');chk.className='int-check';
+      const ck=document.createElement('span');ck.className='int-ck';ck.textContent='✓';chk.appendChild(ck);
+      const ic=document.createElement('div');ic.className='int-icon';ic.style.filter=!int.connected?'grayscale(1)':'none';ic.textContent=int.icon;
+      const n=document.createElement('div');n.className='int-name';n.textContent=int.name;
+      card.appendChild(chk);card.appendChild(ic);card.appendChild(n);
+      if(!int.connected){const ns=document.createElement('div');ns.className='not-setup';ns.textContent='Not set up';card.appendChild(ns);}
+      else card.addEventListener('click',()=>toggleInt(int.id));
+      g.appendChild(card);
+    });
+    gw.appendChild(g);section.appendChild(gw);body.appendChild(section);
+  });
+  document.getElementById('connected-count').textContent=allInts().filter(i=>i.connected).length;
+  document.getElementById('selected-count').textContent=state.integrations.length;
+}
+
+/* ── IMPACT BAR ── */
+function renderImpactBar(){
+  const imp=computeImpact();
+  const matchEl=document.getElementById('impact-match');
+  matchEl.textContent=imp.pct+'%';
+  matchEl.className='impact-value '+(imp.pct>=50?'green':'red');
+  document.getElementById('impact-routed').textContent='~'+imp.routed.toLocaleString();
+  document.getElementById('impact-filtered').textContent=imp.filtered.toLocaleString();
+  document.getElementById('match-bar-fill').style.width=imp.pct+'%';
+  document.getElementById('match-bar-label').textContent=imp.pct===100?'All signals passing':imp.pct===0?'No signals passing':imp.pct+'% of signals match your ICP';
+}
+
+/* ── STATUS + META ── */
+function renderStatusAndMeta(){
+  const pill=document.getElementById('status-pill');
+  const dot=document.getElementById('status-dot');
+  const text=document.getElementById('status-text');
+  const ts=document.getElementById('save-timestamp');
+  const intSum=document.getElementById('save-int-summary');
+
+  if(state.dirty||!state.savedAt){
+    pill.className='status-pill unsaved';dot.className='status-dot amber';text.textContent='Unsaved';
+  } else {
+    pill.className='status-pill active';dot.className='status-dot green';text.textContent='Active';
+  }
+
+  ts.textContent=state.savedAt?'Saved '+state.savedAt:'Never saved';
+
+  const names=state.integrations.map(id=>allInts().find(i=>i.id===id)?.name).filter(Boolean);
+  intSum.textContent=names.length===0?'No integrations selected':'Applied to '+names.slice(0,2).join(', ')+(names.length>2?' +'+(names.length-2)+' more':'');
+}
+
+/* ── PREVIEW ── */
+function renderPreview(){
+  const tbody=document.getElementById('preview-body');tbody.innerHTML='';
+  PREVIEW_COMPANIES.forEach(c=>{
+    const r=passes(c);
+    const label=r==='pass'?'✓ Routed':r==='exclude'?'✕ Excluded':'— Filtered';
+    const cls=r==='pass'?'route-pass':r==='exclude'?'route-exclude':'route-fail';
+    const tr=document.createElement('tr');
+    tr.innerHTML='<td><div class="company-name">'+c.name+'</div><div class="company-meta">'+c.meta+'</div></td><td>'+c.industry+'</td><td>'+c.region+'</td><td style="color:var(--t3)">'+c.employees+'</td><td><span class="route-pill '+cls+'">'+label+'</span></td>';
+    tbody.appendChild(tr);
+  });
+}
+
+/* ── DIRTY ── */
+function renderDirty(){
+  document.getElementById('btn-save').disabled=!state.dirty;
+  document.getElementById('unsaved-banner').classList.toggle('visible',state.dirty&&!!state.savedAt);
+}
+
+/* ── SAVE FLOW ── */
+function requestSave(){
+  const imp=computeImpact();
+  document.getElementById('modal-routed').textContent='~'+imp.routed.toLocaleString();
+  document.getElementById('modal-filtered').textContent=imp.filtered.toLocaleString();
+  const chips=document.getElementById('modal-int-chips');chips.innerHTML='';
+  if(state.integrations.length===0){chips.innerHTML='<span style="font-size:12px;color:var(--t3);font-style:italic;">No integrations selected</span>';}
+  else{state.integrations.forEach(id=>{const int=allInts().find(i=>i.id===id);if(!int)return;const c=document.createElement('span');c.className='int-chip';c.innerHTML=int.icon+' '+int.name;chips.appendChild(c);});}
+  document.getElementById('save-modal').classList.add('visible');
+}
+function closeModal(){document.getElementById('save-modal').classList.remove('visible');}
+function confirmSave(){
+  closeModal();
+  const now=new Date();
+  state.savedAt=now.toLocaleString('en-US',{month:'short',day:'numeric',hour:'numeric',minute:'2-digit'});
+  state.dirty=false;
+  renderAll();
+  showToast('✓  Configuration saved and active');
+}
+
+/* ── TOAST ── */
+function showToast(msg){
+  const t=document.getElementById('toast');t.textContent=msg;
+  t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2800);
+}
+
+/* ── TABS ── */
+function switchTab(el,tab){
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  el.classList.add('active');
+  document.getElementById('page-subtitle').textContent={
+    signals:'Companies researching your product and competitors on G2 · Updated hourly',
+    churn:'Accounts showing decreased engagement signals · Updated daily',
+    audience:'Configure which companies receive your Buyer Intent signals · Filters apply before delivery to integrations',
+  }[tab];
+  document.getElementById('ab-content').style.display=tab==='audience'?'block':'none';
+}
+
+/* ── RENDER ALL ── */
+function renderAll(){
+  renderFilterPanel('icp');
+  renderFilterPanel('anti');
+  renderIntegrations();
+  renderImpactBar();
+  renderPreview();
+  renderStatusAndMeta();
+  renderDirty();
+}
+
+document.addEventListener('click',()=>{if(state.openDD){state.openDD=null;renderAll();}});
+document.getElementById('audience-name').addEventListener('input',()=>{state.dirty=true;renderStatusAndMeta();renderDirty();});
+document.getElementById('save-modal').addEventListener('click',e=>{if(e.target===e.currentTarget)closeModal();});
+
+renderAll();
+</script>
+</body>
+</html>
+HTMLEOF
+echo "Done: $(wc -l < /home/claude/audience-builder-v3-mvp.html) lines"
