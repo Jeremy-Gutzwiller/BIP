@@ -1,0 +1,1080 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Buyer Intent — Market Insights Prototype</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: #f5f6fa;
+      color: #1a1a2e;
+      display: flex;
+      min-height: 100vh;
+    }
+
+    /* ── Sidebar ── */
+    .sidebar {
+      width: 170px;
+      background: #1b1f3b;
+      color: #c0c4d6;
+      padding: 16px 0;
+      flex-shrink: 0;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .sidebar-logo {
+      padding: 0 16px 20px;
+      font-size: 18px;
+      font-weight: 800;
+      color: #fff;
+      letter-spacing: -0.5px;
+    }
+
+    .sidebar-logo span { color: #ff5c35; }
+
+    .sidebar-section {
+      font-size: 10px;
+      font-weight: 700;
+      color: #6b7194;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      padding: 16px 16px 6px;
+    }
+
+    .sidebar-item {
+      padding: 8px 16px;
+      font-size: 13px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      transition: all 0.15s;
+      border-left: 3px solid transparent;
+    }
+
+    .sidebar-item:hover { background: rgba(255,255,255,0.05); }
+
+    .sidebar-item.active {
+      background: rgba(92,59,191,0.15);
+      color: #fff;
+      border-left-color: #5c3bbf;
+      font-weight: 600;
+    }
+
+    .sidebar-icon { width: 18px; text-align: center; font-size: 14px; }
+
+    /* ── Main ── */
+    .main { flex: 1; overflow-x: hidden; }
+
+    .topbar {
+      background: #fff;
+      padding: 12px 32px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid #e8e9f0;
+    }
+
+    .topbar-org {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 14px;
+      font-weight: 600;
+    }
+
+    .topbar-org .org-icon {
+      width: 24px; height: 24px; border-radius: 50%;
+      background: #ff5c35;
+      display: flex; align-items: center; justify-content: center;
+      color: #fff; font-size: 11px; font-weight: 700;
+    }
+
+    .topbar-search {
+      padding: 6px 14px; border: 1px solid #ddd; border-radius: 6px;
+      font-size: 13px; color: #999; width: 200px; background: #fafafa;
+    }
+
+    .page-header { padding: 24px 32px 0; }
+
+    .breadcrumb { font-size: 12px; color: #999; margin-bottom: 4px; }
+    .breadcrumb a { color: #999; text-decoration: none; }
+    .breadcrumb a:hover { color: #5c3bbf; }
+
+    .page-title { font-size: 24px; font-weight: 700; margin-bottom: 12px; }
+
+    .page-tabs { display: flex; border-bottom: 2px solid #e8e9f0; }
+
+    .page-tab {
+      padding: 10px 20px; font-size: 14px; color: #666;
+      cursor: pointer; border-bottom: 2px solid transparent;
+      margin-bottom: -2px; transition: all 0.15s;
+    }
+
+    .page-tab:hover { color: #1a1a2e; }
+
+    .page-tab.active {
+      color: #1a1a2e; font-weight: 600;
+      border-bottom-color: #5c3bbf;
+    }
+
+    .desc-banner {
+      padding: 16px 32px; background: #f0eef8;
+      font-size: 13px; color: #555; line-height: 1.5;
+      border-bottom: 1px solid #e4dff5;
+    }
+
+    .desc-banner a { color: #5c3bbf; font-weight: 600; text-decoration: none; }
+
+    /* ── MARKET INSIGHTS BANNER ── */
+    .mi-banner {
+      margin: 16px 32px 0;
+      background: linear-gradient(135deg, #faf8ff 0%, #f0ebff 100%);
+      border: 1.5px solid #c4b5fd;
+      border-radius: 10px;
+      overflow: hidden;
+    }
+
+    /* Collapsed row */
+    .mi-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 14px 20px;
+      cursor: pointer;
+      user-select: none;
+    }
+
+    .mi-header-left {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .mi-title {
+      font-size: 14px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .mi-title .spark { color: #5c3bbf; }
+
+    .mi-badge {
+      font-size: 11px;
+      font-weight: 600;
+      color: #5c3bbf;
+      background: #ede8f8;
+      padding: 2px 8px;
+      border-radius: 10px;
+    }
+
+    .mi-header-right {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .mi-powered {
+      font-size: 11px;
+      color: #a99bd4;
+    }
+
+    .mi-chev {
+      font-size: 12px;
+      color: #7c5ecf;
+      transition: transform 0.3s ease;
+    }
+
+    .mi-chev.open { transform: rotate(180deg); }
+
+    /* Expanded content */
+    .mi-body {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.4s ease;
+    }
+
+    .mi-body.open {
+      max-height: 500px;
+    }
+
+    .mi-body-inner {
+      padding: 0 20px 10px;
+    }
+
+    /* Horizontal slide layout */
+    .mi-slides-container {
+      height: 140px;
+      position: relative;
+    }
+
+    .mi-slide {
+      display: none;
+      animation: miFade 0.3s ease;
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 100%;
+    }
+
+    .mi-slide.active { display: flex; align-items: center; }
+
+    @keyframes miFade {
+      from { opacity: 0; transform: translateX(10px); }
+      to { opacity: 1; transform: translateX(0); }
+    }
+
+    /* Slide content: horizontal two-column */
+    .mi-slide-content {
+      display: flex;
+      gap: 20px;
+      align-items: center;
+      width: 100%;
+    }
+
+    .mi-left {
+      flex: 0 0 auto;
+      min-width: 200px;
+    }
+
+    .mi-right {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .mi-slide-label {
+      font-size: 11px;
+      font-weight: 700;
+      color: #5c3bbf;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 4px;
+    }
+
+    .mi-stat-row {
+      margin-bottom: 6px;
+    }
+
+    .mi-stat-top {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 2px;
+    }
+
+    .mi-stat-big {
+      font-size: 28px;
+      font-weight: 800;
+      color: #5c3bbf;
+      line-height: 1;
+    }
+
+    .trend-badge {
+      font-size: 10px; font-weight: 600;
+      padding: 2px 6px; border-radius: 8px;
+      display: inline-block;
+    }
+
+    .mi-stat-desc {
+      font-size: 12px;
+      color: #666;
+      line-height: 1.3;
+    }
+
+    .trend-badge.down { background: #fff0f0; color: #d44; }
+    .trend-badge.up { background: #eafff0; color: #2a9d4a; }
+
+    /* Signal box */
+    .mi-signal {
+      background: #fff;
+      border: 1px solid #e4dff5;
+      border-radius: 6px;
+      padding: 6px 10px;
+      font-size: 11px;
+      line-height: 1.4;
+      color: #444;
+    }
+
+    .mi-signal strong { color: #1a1a2e; }
+
+    /* Mini bars (horizontal, compact) */
+    .mi-bars { margin-bottom: 6px; }
+
+    .mi-bar-row {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      margin-bottom: 3px;
+    }
+
+    .mi-bar-label {
+      font-size: 11px; font-weight: 500;
+      width: 72px; flex-shrink: 0; color: #555;
+    }
+
+    .mi-bar-track {
+      flex: 1; height: 14px;
+      background: #e4dff5; border-radius: 4px;
+      overflow: hidden;
+    }
+
+    .mi-bar-fill {
+      height: 100%; border-radius: 4px;
+      transition: all 0.4s ease;
+    }
+
+    .mi-bar-fill.smb { background: #8b6fd4; }
+    .mi-bar-fill.mm { background: #5c3bbf; }
+    .mi-bar-fill.ent { background: #3d1f99; }
+
+    .mi-bar-pct {
+      font-size: 11px; font-weight: 700;
+      width: 30px; text-align: right; color: #333;
+    }
+
+    /* Mini vendor table */
+    .mi-table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    .mi-table th {
+      font-size: 10px; font-weight: 600; color: #999;
+      text-transform: uppercase; text-align: left;
+      padding: 0 0 5px; border-bottom: 1px solid #e4dff5;
+    }
+
+    .mi-table th:not(:first-child) { text-align: right; }
+
+    .mi-table td {
+      font-size: 12px; padding: 4px 0;
+      border-bottom: 1px solid #f0ecf8;
+    }
+
+    .mi-table td:not(:first-child) { text-align: right; font-weight: 600; }
+    .mi-table .vn { font-weight: 600; color: #1a1a2e; }
+    .mi-table .los { color: #d44; }
+    .mi-table .win { color: #2a9d4a; }
+
+    /* Adopter bars */
+    .mi-adopt-row {
+      display: flex; align-items: center;
+      gap: 6px; margin-bottom: 2px;
+    }
+
+    .mi-adopt-label {
+      font-size: 11px; font-weight: 500;
+      width: 72px; flex-shrink: 0; color: #555;
+    }
+
+    .mi-adopt-track {
+      flex: 1; height: 12px;
+      background: #e4dff5; border-radius: 4px; overflow: hidden;
+    }
+
+    .mi-adopt-fill { height: 100%; border-radius: 4px; background: #5c3bbf; }
+
+    .mi-adopt-pct {
+      font-size: 11px; font-weight: 700;
+      width: 36px; text-align: right; color: #333;
+    }
+
+    /* Switch donut */
+    .mi-switch-row {
+      display: flex; align-items: center;
+      gap: 12px;
+    }
+
+    .mi-donut { width: 70px; height: 70px; flex-shrink: 0; }
+
+    .mi-sw-legend { display: flex; flex-direction: column; gap: 3px; }
+
+    .mi-sw-item {
+      display: flex; align-items: center;
+      gap: 5px; font-size: 11px;
+    }
+
+    .sw-d {
+      width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0;
+    }
+
+    .sw-d.c1 { background: #5c3bbf; }
+    .sw-d.c2 { background: #8b6fd4; }
+    .sw-d.c3 { background: #b8a5e3; }
+    .sw-d.c4 { background: #2a9d4a; }
+    .sw-d.c5 { background: #d4cce8; }
+
+    .mi-sw-item strong { color: #1a1a2e; }
+
+    /* Carousel nav bar */
+    .mi-nav {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding-top: 8px;
+      margin-top: 6px;
+      border-top: 1px solid #e4dff5;
+    }
+
+    .mi-nav-left {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .mi-nav-arrows { display: flex; gap: 4px; }
+
+    .mi-nav-arrow {
+      width: 26px; height: 26px; border-radius: 5px;
+      border: 1px solid #d4cce8; background: #fff;
+      cursor: pointer; display: flex;
+      align-items: center; justify-content: center;
+      font-size: 12px; color: #5c3bbf;
+      transition: all 0.15s;
+    }
+
+    .mi-nav-arrow:hover { background: #f5f0ff; border-color: #5c3bbf; }
+
+    .mi-nav-dots { display: flex; gap: 5px; }
+
+    .mi-nav-dot {
+      width: 7px; height: 7px; border-radius: 50%;
+      background: #d4cce8; cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .mi-nav-dot.active {
+      background: #5c3bbf;
+    }
+
+    .mi-cta-wrap {
+      position: relative;
+    }
+
+    .mi-cta {
+      display: inline-flex; align-items: center; gap: 6px;
+      padding: 7px 14px; background: #5c3bbf; color: #fff;
+      border: none; border-radius: 6px; font-size: 12px;
+      font-weight: 600; cursor: pointer; text-decoration: none;
+      transition: background 0.15s;
+    }
+
+    .mi-cta:hover { background: #4a2da6; }
+
+    .mi-dropdown {
+      display: none;
+      position: absolute;
+      bottom: calc(100% + 6px);
+      left: 0;
+      background: #fff;
+      border: 1px solid #e4dff5;
+      border-radius: 8px;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.1);
+      min-width: 220px;
+      padding: 6px 0;
+      z-index: 10;
+      animation: dropIn 0.2s ease;
+    }
+
+    .mi-dropdown.open { display: block; }
+
+    @keyframes dropIn {
+      from { opacity: 0; transform: translateY(4px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .mi-dropdown-item {
+      padding: 10px 16px;
+      font-size: 13px;
+      color: #333;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      transition: background 0.1s;
+    }
+
+    .mi-dropdown-item:hover {
+      background: #f5f0ff;
+      color: #5c3bbf;
+    }
+
+    .mi-dropdown-icon {
+      font-size: 14px;
+      width: 18px;
+      text-align: center;
+      flex-shrink: 0;
+    }
+
+    /* ── Toolbar ── */
+    .toolbar {
+      padding: 14px 32px;
+      display: flex; align-items: center;
+      justify-content: space-between; flex-wrap: wrap; gap: 10px;
+    }
+
+    .toolbar-left { display: flex; align-items: center; gap: 12px; }
+
+    .toolbar-btn {
+      padding: 6px 14px; border: 1px solid #ddd; border-radius: 6px;
+      font-size: 13px; background: #fff; cursor: pointer; color: #555;
+      display: flex; align-items: center; gap: 6px;
+    }
+
+    .toolbar-btn.primary {
+      background: #5c3bbf; color: #fff; border-color: #5c3bbf;
+    }
+
+    .toolbar-right { display: flex; align-items: center; gap: 12px; }
+
+    .toolbar-link {
+      font-size: 13px; color: #5c3bbf; text-decoration: none; font-weight: 500;
+    }
+
+    /* Filter bar */
+    .filter-bar {
+      padding: 0 32px 14px;
+      display: flex; align-items: center;
+      justify-content: space-between; flex-wrap: wrap; gap: 8px;
+    }
+
+    .filters { display: flex; gap: 6px; }
+
+    .filter-chip {
+      padding: 6px 12px; border: 1px solid #ddd; border-radius: 6px;
+      font-size: 12px; background: #fff; cursor: pointer; color: #555;
+      display: flex; align-items: center; gap: 4px;
+    }
+
+    .filter-chip .arrow { font-size: 10px; color: #999; }
+
+    .time-range {
+      display: flex; align-items: center; gap: 2px;
+      background: #f0f0f4; border-radius: 6px; padding: 2px;
+    }
+
+    .time-btn {
+      padding: 5px 12px; border: none; border-radius: 5px;
+      font-size: 12px; background: transparent; cursor: pointer;
+      color: #666; font-weight: 500;
+    }
+
+    .time-btn.active {
+      background: #fff; color: #1a1a2e; font-weight: 600;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+    }
+
+    /* ── Summary cards ── */
+    .summary-cards {
+      padding: 0 32px 20px;
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 12px;
+    }
+
+    .summary-card {
+      background: #fff; border: 1.5px solid #e8e9f0;
+      border-radius: 10px; padding: 18px 20px;
+      min-height: 120px; display: flex; flex-direction: column;
+    }
+
+    .summary-card-label {
+      font-size: 13px; font-weight: 600; color: #555;
+      margin-bottom: 8px; display: flex; align-items: center; gap: 6px;
+    }
+
+    .info-icon {
+      display: inline-flex; align-items: center; justify-content: center;
+      width: 16px; height: 16px; border-radius: 50%;
+      background: #e8e8e8; font-size: 10px; color: #888;
+    }
+
+    .summary-card-value { font-size: 30px; font-weight: 800; color: #1a1a2e; margin-bottom: 4px; }
+    .summary-card-sub { font-size: 12px; color: #888; }
+
+    .summary-card-action {
+      margin-top: auto; padding-top: 8px;
+      font-size: 13px; color: #5c3bbf; text-decoration: none;
+      font-weight: 500; cursor: pointer;
+    }
+
+    .summary-card-action:hover { text-decoration: underline; }
+
+    /* ── Data table ── */
+    .table-section { padding: 0 32px 32px; }
+
+    .table-toolbar {
+      display: flex; align-items: center;
+      justify-content: space-between; margin-bottom: 12px;
+    }
+
+    .data-table {
+      width: 100%; border-collapse: collapse;
+      background: #fff; border-radius: 8px;
+      overflow: hidden; box-shadow: 0 1px 4px rgba(0,0,0,0.04);
+    }
+
+    .data-table th {
+      font-size: 12px; font-weight: 600; color: #666;
+      text-align: left; padding: 12px 14px;
+      border-bottom: 2px solid #e8e9f0; background: #fafafc;
+    }
+
+    .data-table td {
+      font-size: 13px; padding: 12px 14px;
+      border-bottom: 1px solid #f0f0f4; color: #333;
+    }
+
+    .data-table tr:hover td { background: #faf8ff; }
+
+    .company-link { color: #5c3bbf; text-decoration: none; font-weight: 500; }
+    .company-link:hover { text-decoration: underline; }
+
+    .activity-badge {
+      padding: 3px 10px; border-radius: 4px;
+      font-size: 11px; font-weight: 600;
+    }
+
+    .activity-badge.low { background: #f0f0f4; color: #888; }
+    .activity-badge.high { background: #eafff0; color: #2a9d4a; }
+
+    .signal-icons { display: flex; gap: 4px; }
+
+    .signal-dot {
+      width: 20px; height: 20px; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 10px;
+    }
+
+    .signal-dot.eye { background: #e8f4fd; color: #3b82f6; }
+    .signal-dot.compare { background: #fce8f4; color: #d946a8; }
+
+    @media (max-width: 1100px) {
+      .summary-cards { grid-template-columns: 1fr 1fr; }
+      .mi-slide-content { flex-direction: column; }
+    }
+
+    @media (max-width: 700px) {
+      .sidebar { display: none; }
+      .summary-cards { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- Sidebar -->
+<div class="sidebar">
+  <div class="sidebar-logo">my.<span>G2</span></div>
+  <div class="sidebar-item"><span class="sidebar-icon">&#8962;</span> Home</div>
+  <div class="sidebar-item"><span class="sidebar-icon">&#9737;</span> Product Profile</div>
+  <div class="sidebar-item"><span class="sidebar-icon">&#9733;</span> Reviews</div>
+  <div class="sidebar-item active"><span class="sidebar-icon">&#9670;</span> Buyer Activity</div>
+  <div class="sidebar-item" style="padding-left:36px;font-size:12px">Track Your Prospects</div>
+  <div class="sidebar-item" style="padding-left:36px;font-size:12px">Profile Visitors</div>
+  <div class="sidebar-section">Buyer Intent</div>
+  <div class="sidebar-item" style="padding-left:36px;font-size:12px;color:#fff;font-weight:600">Your Signals</div>
+  <div class="sidebar-item" style="padding-left:36px;font-size:12px">Notifications</div>
+  <div class="sidebar-section">Leads</div>
+  <div class="sidebar-item" style="padding-left:36px;font-size:12px">Leads Activity</div>
+  <div class="sidebar-item" style="padding-left:36px;font-size:12px">Lead Form</div>
+  <div class="sidebar-section" style="margin-top:16px"></div>
+  <div class="sidebar-item"><span class="sidebar-icon">&#9878;</span> Analytics</div>
+  <div class="sidebar-item"><span class="sidebar-icon">&#9788;</span> Market Intelligence</div>
+  <div class="sidebar-item"><span class="sidebar-icon">&#8644;</span> Integrations</div>
+</div>
+
+<!-- Main -->
+<div class="main">
+
+  <div class="topbar">
+    <div class="topbar-org">
+      <span class="org-icon">G</span> G2 Marketing Solutions
+    </div>
+    <input class="topbar-search" placeholder="Quick nav..." readonly>
+  </div>
+
+  <div class="page-header">
+    <div class="breadcrumb"><a href="#">Home</a> &rsaquo; <a href="#">Buyer Activity</a> &rsaquo; Buyer Intent</div>
+    <div class="page-title">Buyer Intent</div>
+    <div class="page-tabs">
+      <div class="page-tab active">Intent Signals</div>
+      <div class="page-tab">Churn Risks</div>
+      <div class="page-tab">Audience Settings</div>
+    </div>
+  </div>
+
+  <div class="desc-banner">
+    G2 Buyer Intent captures data on buyers researching your product. Signals trigger from actions like viewing your profile or comparing it to competitors, helping teams identify the buyer journey stage. <a href="#">Learn More</a>
+  </div>
+
+  <!-- ★ MARKET INSIGHTS BANNER — full width, above toolbar ★ -->
+  <div class="mi-banner" id="miBanner">
+    <div class="mi-header" id="miHeader">
+      <div class="mi-header-left">
+        <div class="mi-title">Market Trends</div>
+        <span class="mi-badge">4 new trends</span>
+      </div>
+      <div class="mi-header-right">
+        <span class="mi-powered">Powered by Ramp</span>
+        <span class="mi-chev" id="miChev">&#9660;</span>
+      </div>
+    </div>
+
+    <div class="mi-body" id="miBody">
+      <div class="mi-body-inner">
+
+        <div class="mi-slides-container">
+        <!-- Slide 1: Spend by Size -->
+        <div class="mi-slide active" data-s="0">
+          <div class="mi-slide-content">
+            <div class="mi-left">
+              <div class="mi-slide-label">Spend by Company Size</div>
+              <div class="mi-stat-row">
+                <div class="mi-stat-top"><span class="mi-stat-big">37.5%</span> <span class="trend-badge down">&darr; 2.2% YoY</span></div>
+                <div class="mi-stat-desc">of companies spend on CRM tools</div>
+              </div>
+              <div class="mi-signal">
+                <strong>Recommendation:</strong> Focus your ICP on Mid-Market companies — they represent the largest concentration of CRM spend at 44% of the category.
+              </div>
+            </div>
+            <div class="mi-right">
+              <div class="mi-bars">
+                <div class="mi-bar-row">
+                  <span class="mi-bar-label">Mid-Market</span>
+                  <div class="mi-bar-track"><div class="mi-bar-fill mm" style="width:44%"></div></div>
+                  <span class="mi-bar-pct">44%</span>
+                </div>
+                <div class="mi-bar-row">
+                  <span class="mi-bar-label">SMB</span>
+                  <div class="mi-bar-track"><div class="mi-bar-fill smb" style="width:28%"></div></div>
+                  <span class="mi-bar-pct">28%</span>
+                </div>
+                <div class="mi-bar-row">
+                  <span class="mi-bar-label">Enterprise</span>
+                  <div class="mi-bar-track"><div class="mi-bar-fill ent" style="width:15%"></div></div>
+                  <span class="mi-bar-pct">15%</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Slide 2: Displacement -->
+        <div class="mi-slide" data-s="1">
+          <div class="mi-slide-content">
+            <div class="mi-left">
+              <div class="mi-slide-label">Displacement Opportunity</div>
+              <div class="mi-stat-row">
+                <div class="mi-stat-top"><span class="mi-stat-big">-4.7pp</span> <span class="trend-badge down">&darr; losing share</span></div>
+                <div class="mi-stat-desc">HubSpot year-over-year adoption decline</div>
+              </div>
+              <div class="mi-signal">
+                <strong>Recommendation:</strong> Prioritize outreach to HubSpot and Pipedrive accounts — both are losing share and their customers may be actively evaluating alternatives.
+              </div>
+            </div>
+            <div class="mi-right">
+              <table class="mi-table">
+                <thead><tr><th>Vendor</th><th>Adoption</th><th>YoY</th><th>Spend</th></tr></thead>
+                <tbody>
+                  <tr><td class="vn">Salesforce</td><td>76.4%</td><td class="win">+3.6</td><td>74.5%</td></tr>
+                  <tr><td class="vn">HubSpot</td><td>33.1%</td><td class="los">-4.7</td><td>21.6%</td></tr>
+                  <tr><td class="vn">Zoho</td><td>13.3%</td><td class="win">+0.9</td><td>2.5%</td></tr>
+                  <tr><td class="vn">Attio</td><td>3.9%</td><td class="win">+2.0</td><td>0.4%</td></tr>
+                  <tr><td class="vn">Pipedrive</td><td>3.8%</td><td class="los">-0.8</td><td>0.7%</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- Slide 3: Rising Challengers -->
+        <div class="mi-slide" data-s="2">
+          <div class="mi-slide-content">
+            <div class="mi-left">
+              <div class="mi-slide-label">Rising Challengers</div>
+              <div class="mi-stat-row">
+                <div class="mi-stat-top"><span class="mi-stat-big">59.6%</span> <span class="trend-badge up">&uarr; #1 for new buyers</span></div>
+                <div class="mi-stat-desc">of new CRM buyers chose Salesforce</div>
+              </div>
+              <div class="mi-signal">
+                <strong>Recommendation:</strong> Monitor Attio as an emerging competitor — it's the fastest-growing CRM (+2.0pp YoY) and 93% of its base is SMB. Consider adding their customers to your audience.
+              </div>
+            </div>
+            <div class="mi-right">
+              <div class="mi-adopt-row">
+                <span class="mi-adopt-label">Salesforce</span>
+                <div class="mi-adopt-track"><div class="mi-adopt-fill" style="width:59.6%"></div></div>
+                <span class="mi-adopt-pct">59.6%</span>
+              </div>
+              <div class="mi-adopt-row">
+                <span class="mi-adopt-label">HubSpot</span>
+                <div class="mi-adopt-track"><div class="mi-adopt-fill" style="width:24.8%;background:#8b6fd4"></div></div>
+                <span class="mi-adopt-pct">24.8%</span>
+              </div>
+              <div class="mi-adopt-row">
+                <span class="mi-adopt-label">Zoho</span>
+                <div class="mi-adopt-track"><div class="mi-adopt-fill" style="width:12.9%;background:#b8a5e3"></div></div>
+                <span class="mi-adopt-pct">12.9%</span>
+              </div>
+              <div class="mi-adopt-row">
+                <span class="mi-adopt-label">Attio</span>
+                <div class="mi-adopt-track"><div class="mi-adopt-fill" style="width:3.1%;background:#2a9d4a"></div></div>
+                <span class="mi-adopt-pct">3.1%</span>
+              </div>
+              <div class="mi-adopt-row">
+                <span class="mi-adopt-label">Pipedrive</span>
+                <div class="mi-adopt-track"><div class="mi-adopt-fill" style="width:3.1%;background:#d4cce8"></div></div>
+                <span class="mi-adopt-pct">3.1%</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Slide 4: Switching Dynamics -->
+        <div class="mi-slide" data-s="3">
+          <div class="mi-slide-content">
+            <div class="mi-left">
+              <div class="mi-slide-label">Switching Dynamics</div>
+              <div class="mi-stat-row">
+                <div class="mi-stat-top"><span class="mi-stat-big">43.5%</span> <span class="trend-badge up">&uarr; top win rate</span></div>
+                <div class="mi-stat-desc">of CRM switchers chose Salesforce</div>
+              </div>
+              <div class="mi-signal">
+                <strong>Recommendation:</strong> Target accounts on Salesforce and HubSpot showing dissatisfaction signals — these two capture ~80% of CRM switchers, making their customers the highest-value prospects.
+              </div>
+            </div>
+            <div class="mi-right">
+              <div class="mi-switch-row">
+                <svg class="mi-donut" viewBox="0 0 42 42">
+                  <circle cx="21" cy="21" r="15.915" fill="none" stroke="#d4cce8" stroke-width="5"/>
+                  <circle cx="21" cy="21" r="15.915" fill="none" stroke="#5c3bbf" stroke-width="5"
+                    stroke-dasharray="43.5 56.5" stroke-dashoffset="25"/>
+                  <circle cx="21" cy="21" r="15.915" fill="none" stroke="#8b6fd4" stroke-width="5"
+                    stroke-dasharray="36.0 64.0" stroke-dashoffset="81.5"/>
+                  <circle cx="21" cy="21" r="15.915" fill="none" stroke="#b8a5e3" stroke-width="5"
+                    stroke-dasharray="10.1 89.9" stroke-dashoffset="45.5"/>
+                  <circle cx="21" cy="21" r="15.915" fill="none" stroke="#2a9d4a" stroke-width="5"
+                    stroke-dasharray="5.7 94.3" stroke-dashoffset="35.4"/>
+                </svg>
+                <div class="mi-sw-legend">
+                  <div class="mi-sw-item"><span class="sw-d c1"></span> <strong>43.5%</strong> Salesforce</div>
+                  <div class="mi-sw-item"><span class="sw-d c2"></span> <strong>36.0%</strong> HubSpot</div>
+                  <div class="mi-sw-item"><span class="sw-d c3"></span> <strong>10.1%</strong> Zoho</div>
+                  <div class="mi-sw-item"><span class="sw-d c4"></span> <strong>5.7%</strong> Attio</div>
+                  <div class="mi-sw-item"><span class="sw-d c5"></span> <strong>4.7%</strong> Others</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        </div><!-- end mi-slides-container -->
+
+        <!-- Nav + CTA row -->
+        <div class="mi-nav">
+          <div class="mi-nav-arrows">
+            <button class="mi-nav-arrow" id="prev">&#8592;</button>
+            <button class="mi-nav-arrow" id="next">&#8594;</button>
+          </div>
+          <div class="mi-nav-dots" id="dots">
+            <span class="mi-nav-dot active" data-d="0"></span>
+            <span class="mi-nav-dot" data-d="1"></span>
+            <span class="mi-nav-dot" data-d="2"></span>
+            <span class="mi-nav-dot" data-d="3"></span>
+          </div>
+          <div class="mi-cta-wrap">
+            <button class="mi-cta" id="nextStepsBtn">Next Steps &#9662;</button>
+            <div class="mi-dropdown" id="nextStepsDropdown">
+              <div class="mi-dropdown-item" onclick="alert('Opens Audience Builder with CRM pre-selected')">
+                <span class="mi-dropdown-icon">&#9998;</span> Add to your Audience
+              </div>
+              <div class="mi-dropdown-item" onclick="alert('Scrolls to signal table and opens filter panel')">
+                <span class="mi-dropdown-icon">&#9881;</span> Filter your signals below
+              </div>
+              <div class="mi-dropdown-item" onclick="alert('Opens Create Notification modal')">
+                <span class="mi-dropdown-icon">&#9993;</span> Create a notification
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- Toolbar -->
+  <div class="toolbar">
+    <div class="toolbar-left">
+      <button class="toolbar-btn">&#128190; Save as Segment</button>
+      <button class="toolbar-btn">View Saved Segments</button>
+    </div>
+    <div class="toolbar-right">
+      <a class="toolbar-link" href="#">Manage Integrations</a>
+      <a class="toolbar-link" href="#">Manage Notifications</a>
+      <button class="toolbar-btn primary">+ Create a Notification</button>
+    </div>
+  </div>
+
+  <!-- Filter bar -->
+  <div class="filter-bar">
+    <div class="filters">
+      <span class="filter-chip">Location <span class="arrow">&#9662;</span></span>
+      <span class="filter-chip">Firmographics <span class="arrow">&#9662;</span></span>
+      <span class="filter-chip">Companies <span class="arrow">&#9662;</span></span>
+      <span class="filter-chip">Product Intent <span class="arrow">&#9662;</span></span>
+      <span class="filter-chip">Category Intent <span class="arrow">&#9662;</span></span>
+      <span class="filter-chip">Signal Type <span class="arrow">&#9662;</span></span>
+    </div>
+    <div class="time-range">
+      <button class="time-btn">7d</button>
+      <button class="time-btn active">30d</button>
+      <button class="time-btn">90d</button>
+      <button class="time-btn">1yr</button>
+      <button class="time-btn">Custom</button>
+    </div>
+  </div>
+
+  <!-- Summary cards (now 3 — removed Recommended Action) -->
+  <div class="summary-cards">
+    <div class="summary-card">
+      <div class="summary-card-label">Companies In Market <span class="info-icon">i</span></div>
+      <div class="summary-card-value">16,922</div>
+      <div class="summary-card-sub">Matched current filters</div>
+      <a class="summary-card-action">&#8681; Download CSV</a>
+    </div>
+    <div class="summary-card">
+      <div class="summary-card-label">Looking at You Directly <span class="info-icon">i</span></div>
+      <div class="summary-card-value">730</div>
+      <div class="summary-card-sub">Intent toward your Product</div>
+      <a class="summary-card-action">Apply Filter</a>
+    </div>
+    <div class="summary-card">
+      <div class="summary-card-label">Looking at Competitors <span class="info-icon">i</span></div>
+      <div class="summary-card-value">14,475</div>
+      <div class="summary-card-sub">Intent to alternatives in your category</div>
+      <a class="summary-card-action">Apply Filter</a>
+    </div>
+  </div>
+
+  <!-- Data table -->
+  <div class="table-section">
+    <div class="table-toolbar">
+      <span class="filter-chip">Download CSV <span class="arrow">&#9662;</span></span>
+      <span class="filter-chip">&#9776; Modify Columns <span class="arrow">&#9662;</span></span>
+    </div>
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th>Company Name</th>
+          <th>Activity Level</th>
+          <th>Bombora Intent Topics</th>
+          <th>Visitor Locations</th>
+          <th>Signal Types</th>
+          <th>Last Activity</th>
+          <th>Total Visitors</th>
+          <th>Total Signals</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><a class="company-link" href="#">Edwards Lifesciences</a></td>
+          <td><span class="activity-badge low">Low</span></td>
+          <td>4</td>
+          <td>Jiangsu, China +3</td>
+          <td><div class="signal-icons"><span class="signal-dot eye">&#128065;</span><span class="signal-dot compare">&#8646;</span></div></td>
+          <td>2 days ago</td>
+          <td>34</td>
+          <td>91</td>
+        </tr>
+        <tr>
+          <td><a class="company-link" href="#">Indian Institute of Technology Delhi</a></td>
+          <td><span class="activity-badge low">Low</span></td>
+          <td>3</td>
+          <td>Odisha, India</td>
+          <td><div class="signal-icons"><span class="signal-dot compare">&#8646;</span></div></td>
+          <td>8 days ago</td>
+          <td>1</td>
+          <td>4</td>
+        </tr>
+        <tr>
+          <td><a class="company-link" href="#">DataStax</a></td>
+          <td><span class="activity-badge high">High</span></td>
+          <td>2</td>
+          <td>Turkiye +3</td>
+          <td><div class="signal-icons"><span class="signal-dot eye">&#128065;</span><span class="signal-dot compare">&#8646;</span></div></td>
+          <td>9 days ago</td>
+          <td>4</td>
+          <td>6</td>
+        </tr>
+        <tr>
+          <td><a class="company-link" href="#">BHHC</a></td>
+          <td><span class="activity-badge low">Low</span></td>
+          <td>2</td>
+          <td>Kentucky, US +1</td>
+          <td><div class="signal-icons"><span class="signal-dot compare">&#8646;</span></div></td>
+          <td>7 days ago</td>
+          <td>2</td>
+          <td>4</td>
+        </tr>
+        <tr>
+          <td><a class="company-link" href="#">Shanghai Justice Marketing</a></td>
+          <td><span class="activity-badge low">Low</span></td>
+          <td></td>
+          <td>Shanghai, China</td>
+          <td><div class="signal-icons"><span class="signal-dot compare">&#8646;</span></div></td>
+          <td>9 days ago</td>
+          <td>1</td>
+          <td>5</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<script>
+  let cur = 0;
+  const tot = 4;
+
+  document.getElementById('miHeader').addEventListener('click', () => {
+    const body = document.getElementById('miBody');
+    const chev = document.getElementById('miChev');
+    body.classList.toggle('open');
+    chev.classList.toggle('open');
+  });
+
+  function go(i) {
+    cur = ((i % tot) + tot) % tot;
+    document.querySelectorAll('.mi-slide').forEach(s => s.classList.remove('active'));
+    document.querySelector(`.mi-slide[data-s="${cur}"]`).classList.add('active');
+    document.querySelectorAll('.mi-nav-dot').forEach(d => d.classList.remove('active'));
+    document.querySelector(`.mi-nav-dot[data-d="${cur}"]`).classList.add('active');
+  }
+
+  document.getElementById('prev').addEventListener('click', () => go(cur - 1));
+  document.getElementById('next').addEventListener('click', () => go(cur + 1));
+  document.getElementById('dots').addEventListener('click', e => {
+    if (e.target.dataset.d !== undefined) go(parseInt(e.target.dataset.d));
+  });
+
+  const nsBtn = document.getElementById('nextStepsBtn');
+  const nsDropdown = document.getElementById('nextStepsDropdown');
+
+  nsBtn.addEventListener('click', (e) => {
+    e.stopPropagation();
+    nsDropdown.classList.toggle('open');
+  });
+
+  document.addEventListener('click', () => {
+    nsDropdown.classList.remove('open');
+  });
+</script>
+
+</body>
+</html>
