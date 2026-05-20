@@ -1,0 +1,784 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Email Preview — Monthly Buyer Intent ROI Recap</title>
+  <link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Figtree', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: #f0f1f3;
+      color: #201f23;
+      padding: 24px 16px;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ── Page actions ── */
+    .page-actions {
+      max-width: 720px;
+      margin: 0 auto 16px;
+      display: flex;
+      gap: 8px;
+      align-items: center;
+    }
+    .page-actions .brand {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-weight: 700;
+      font-size: 13px;
+    }
+    .brand-mark {
+      width: 24px; height: 24px;
+      background: #ff492c;
+      border-radius: 5px;
+      display: flex; align-items: center; justify-content: center;
+      color: #fff; font-weight: 900; font-size: 12px;
+    }
+    .brand-text span { color: #ff492c; }
+    .page-actions .spacer { flex: 1; }
+    .page-actions a, .page-actions button {
+      font-family: inherit;
+      font-size: 12px;
+      font-weight: 600;
+      padding: 6px 12px;
+      border-radius: 6px;
+      border: 1px solid #dfdfe2;
+      background: #fff;
+      color: #201f23;
+      text-decoration: none;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+    .page-actions a:hover, .page-actions button:hover { background: #f2f2f3; }
+    .page-actions .material-symbols-outlined { font-size: 14px; }
+
+    /* ── Directional warn ── */
+    .directional-warn {
+      max-width: 720px;
+      margin: 0 auto 16px;
+      background: #fff5d6;
+      border: 1px solid #ecd994;
+      color: #b58a00;
+      padding: 10px 14px;
+      border-radius: 8px;
+      font-size: 12px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .directional-warn .material-symbols-outlined { font-size: 16px; }
+
+    /* ── Inbox frame ── */
+    .inbox {
+      max-width: 720px;
+      margin: 0 auto;
+      background: #fff;
+      border-radius: 12px;
+      box-shadow: 0 4px 16px rgba(32,31,35,0.08), 0 1px 3px rgba(32,31,35,0.06);
+      overflow: hidden;
+    }
+    .inbox-header {
+      padding: 18px 24px;
+      border-bottom: 1px solid #dfdfe2;
+      background: #fafafa;
+    }
+    .email-subject {
+      font-size: 18px;
+      font-weight: 700;
+      color: #201f23;
+      margin-bottom: 4px;
+      letter-spacing: -0.01em;
+    }
+    .email-preview {
+      font-size: 13px;
+      color: #6f6d78;
+      margin-bottom: 12px;
+      line-height: 1.4;
+    }
+    .email-meta {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-size: 12px;
+      color: #6f6d78;
+    }
+    .from-avatar {
+      width: 36px; height: 36px;
+      border-radius: 50%;
+      background: #5746b2;
+      color: #fff;
+      display: flex; align-items: center; justify-content: center;
+      font-weight: 800;
+      font-size: 13px;
+      flex-shrink: 0;
+    }
+    .from-block { flex: 1; }
+    .from-name { font-weight: 600; color: #201f23; font-size: 13px; }
+    .from-email { font-size: 12px; color: #6f6d78; }
+    .email-date { font-size: 12px; color: #6f6d78; }
+
+    /* ── Email body ── */
+    .email-body {
+      background: #fff;
+    }
+    .email-content {
+      max-width: 600px;
+      margin: 0 auto;
+      padding: 0;
+    }
+
+    /* Section: cover (compressed) */
+    .email-cover {
+      padding: 24px 32px 18px;
+      background: linear-gradient(180deg, #f5f4fb 0%, #fff 100%);
+      border-bottom: 1px solid #f2f2f3;
+    }
+    .email-period-label {
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      color: #6f6d78;
+      margin-bottom: 6px;
+    }
+    .email-title {
+      font-size: 20px;
+      font-weight: 800;
+      letter-spacing: -0.01em;
+      line-height: 1.2;
+      color: #201f23;
+    }
+    .email-title .accent { color: #5746b2; }
+
+    /* Section: hero narrative */
+    .email-hero {
+      padding: 28px 32px;
+      border-bottom: 1px solid #f2f2f3;
+    }
+    .email-hero-label {
+      font-size: 10px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: #b0afb6;
+      margin-bottom: 10px;
+    }
+    .email-hero-narrative {
+      font-size: 17px;
+      line-height: 1.5;
+      color: #201f23;
+      font-weight: 500;
+    }
+    .email-hero-narrative strong {
+      font-weight: 700;
+      color: #5746b2;
+    }
+
+    /* Section: big stat */
+    .email-big-stat {
+      padding: 28px 32px;
+      border-bottom: 1px solid #f2f2f3;
+    }
+    .email-stat-label {
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: #6f6d78;
+      margin-bottom: 8px;
+    }
+    .email-stat-value {
+      font-size: 48px;
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      color: #201f23;
+      line-height: 1;
+      display: flex;
+      align-items: baseline;
+      gap: 12px;
+    }
+    .email-stat-delta {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      font-size: 13px;
+      font-weight: 700;
+      padding: 4px 10px;
+      border-radius: 9999px;
+      background: #ecfbf8;
+      color: #0f5249;
+    }
+    .email-stat-delta .material-symbols-outlined { font-size: 14px; }
+    .email-stat-context {
+      font-size: 13px;
+      color: #4c4b53;
+      margin-top: 12px;
+    }
+
+    /* Section: 3-col stat strip */
+    .email-stat-strip {
+      padding: 0 32px;
+      border-bottom: 1px solid #f2f2f3;
+    }
+    .email-stat-strip-inner {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 0;
+      padding: 24px 0;
+    }
+    .stat-cell {
+      padding: 0 12px;
+      border-right: 1px solid #f2f2f3;
+      text-decoration: none;
+      color: inherit;
+      display: block;
+      transition: background 0.15s;
+      border-radius: 4px;
+    }
+    .stat-cell:hover { background: #fafafa; }
+    .stat-cell:first-child { padding-left: 0; }
+    .stat-cell:last-child { border-right: none; padding-right: 0; }
+    .stat-cell-label {
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      color: #6f6d78;
+      margin-bottom: 6px;
+    }
+    .stat-cell-value {
+      font-size: 22px;
+      font-weight: 800;
+      color: #201f23;
+      letter-spacing: -0.02em;
+      line-height: 1.1;
+      margin-bottom: 4px;
+    }
+    .stat-cell-delta {
+      font-size: 11px;
+      font-weight: 600;
+    }
+    .stat-cell-delta.up { color: #0f5249; }
+    .stat-cell-delta.down { color: #eb2000; }
+
+    /* Section: hot accounts */
+    .email-section {
+      padding: 28px 32px;
+      border-bottom: 1px solid #f2f2f3;
+    }
+    .email-section-title {
+      font-size: 15px;
+      font-weight: 700;
+      color: #201f23;
+      margin-bottom: 4px;
+    }
+    .email-section-subtitle {
+      font-size: 12px;
+      color: #6f6d78;
+      margin-bottom: 16px;
+    }
+    .hot-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px 0;
+      border-top: 1px solid #f2f2f3;
+      text-decoration: none;
+      color: inherit;
+      transition: background 0.15s;
+      border-radius: 4px;
+    }
+    .hot-row:hover { background: #fafafa; }
+    .hot-row:first-of-type { border-top: none; padding-top: 0; }
+    .see-all-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      margin-top: 14px;
+      font-size: 12px;
+      font-weight: 600;
+      color: #5746b2;
+      text-decoration: none;
+      padding-top: 12px;
+      border-top: 1px solid #f2f2f3;
+      width: 100%;
+    }
+    .see-all-link:hover { color: #45388f; }
+    .see-all-link .material-symbols-outlined { font-size: 14px; }
+    .hot-row-logo {
+      width: 32px; height: 32px;
+      border-radius: 6px;
+      background: #f2f0f9;
+      color: #5746b2;
+      display: flex; align-items: center; justify-content: center;
+      font-weight: 800;
+      font-size: 13px;
+      flex-shrink: 0;
+    }
+    .hot-row-main { flex: 1; min-width: 0; }
+    .hot-row-name {
+      font-size: 14px;
+      font-weight: 700;
+      color: #201f23;
+      margin-bottom: 2px;
+    }
+    .hot-row-signal {
+      font-size: 12px;
+      color: #4c4b53;
+      line-height: 1.4;
+    }
+    .hot-row-score {
+      font-size: 11px;
+      font-weight: 700;
+      padding: 3px 8px;
+      border-radius: 9999px;
+      background: #fff6f5;
+      color: #ff492c;
+      flex-shrink: 0;
+    }
+
+    /* Section: competitive alert */
+    .competitive-alert {
+      margin: 0 32px;
+      background: #fff6f5;
+      border: 1px solid #ffd7d1;
+      border-left: 4px solid #ff492c;
+      border-radius: 10px;
+      padding: 16px 18px;
+    }
+    .competitive-alert-header {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 12px;
+      font-weight: 700;
+      color: #ff492c;
+      margin-bottom: 4px;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+    }
+    .competitive-alert-header .material-symbols-outlined { font-size: 16px; }
+    .competitive-alert-title {
+      font-size: 14px;
+      font-weight: 700;
+      color: #201f23;
+      margin-bottom: 12px;
+    }
+    .competitive-alert-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 0;
+      border-top: 1px solid #ffd7d1;
+      text-decoration: none;
+      color: inherit;
+      transition: background 0.15s;
+      border-radius: 4px;
+    }
+    .competitive-alert-row:first-of-type { border-top: none; padding-top: 4px; }
+    .competitive-alert-row:hover { background: rgba(255,255,255,0.5); }
+    .competitive-alert-name {
+      font-weight: 700;
+      color: #201f23;
+      font-size: 14px;
+      flex-shrink: 0;
+    }
+    .competitive-alert-vs {
+      font-size: 12px;
+      color: #4c4b53;
+      flex: 1;
+    }
+    .competitive-alert-vs strong { color: #ff492c; font-weight: 600; }
+    .competitive-alert-arrow {
+      color: #ff492c;
+      font-weight: 800;
+    }
+    .competitive-alert-arrow .material-symbols-outlined { font-size: 16px; }
+
+    /* Section: trend / YTD */
+    .ytd-section {
+      padding: 28px 32px;
+      background: #5746b2;
+      color: #fff;
+      text-align: center;
+    }
+    .ytd-eyebrow {
+      font-size: 10px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      opacity: 0.7;
+      margin-bottom: 10px;
+    }
+    .ytd-value {
+      font-size: 42px;
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      line-height: 1;
+      margin-bottom: 8px;
+    }
+    .ytd-yoy-pill {
+      display: inline-block;
+      background: rgba(255,255,255,0.15);
+      border: 1px solid rgba(255,255,255,0.25);
+      border-radius: 9999px;
+      padding: 5px 12px;
+      font-size: 11px;
+      font-weight: 600;
+      margin: 0 auto 12px;
+    }
+    .ytd-label {
+      font-size: 13px;
+      opacity: 0.85;
+      max-width: 420px;
+      margin: 0 auto;
+      line-height: 1.5;
+    }
+
+    /* CTA */
+    .email-cta-wrap {
+      padding: 32px;
+      text-align: center;
+      border-bottom: 1px solid #f2f2f3;
+    }
+    .email-cta-text {
+      font-size: 13px;
+      color: #4c4b53;
+      margin-bottom: 16px;
+    }
+    .email-cta-button {
+      display: inline-block;
+      background: #5746b2;
+      color: #fff;
+      text-decoration: none;
+      padding: 12px 24px;
+      border-radius: 8px;
+      font-weight: 700;
+      font-size: 14px;
+      transition: background 0.15s;
+    }
+    .email-cta-button:hover { background: #45388f; }
+    .email-cta-secondary {
+      display: block;
+      margin-top: 12px;
+      font-size: 12px;
+      color: #6f6d78;
+      text-decoration: none;
+    }
+    .email-cta-secondary:hover { color: #5746b2; }
+
+    /* Footer */
+    .email-footer {
+      padding: 24px 32px;
+      background: #fafafa;
+      text-align: center;
+      font-size: 11px;
+      color: #6f6d78;
+      line-height: 1.6;
+    }
+    .email-footer a { color: #5746b2; text-decoration: none; }
+    .email-footer-brand {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-weight: 700;
+      font-size: 12px;
+      color: #201f23;
+      margin-bottom: 6px;
+    }
+
+    /* Mobile */
+    @media (max-width: 620px) {
+      body { padding: 12px 8px; }
+      .email-content { max-width: 100%; }
+      .email-cover { padding: 28px 20px 22px; }
+      .email-hero { padding: 22px 20px; }
+      .email-big-stat { padding: 22px 20px; }
+      .email-stat-strip { padding: 0 20px; }
+      .email-stat-strip-inner { grid-template-columns: 1fr; gap: 16px; }
+      .stat-cell { border-right: none; border-bottom: 1px solid #f2f2f3; padding: 0 0 14px; }
+      .stat-cell:last-child { border-bottom: none; padding-bottom: 0; }
+      .email-section { padding: 22px 20px; }
+      .competitive-alert { margin: 0 20px; }
+      .ytd-section { padding: 24px 20px; }
+      .email-cta-wrap { padding: 24px 20px; }
+      .email-title { font-size: 22px; }
+      .email-stat-value { font-size: 36px; }
+      .ytd-value { font-size: 32px; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="page-actions">
+    <div class="brand">
+      <div class="brand-mark">G</div>
+      <span>G<span>2</span> · Buyer Intent · Email mockup</span>
+    </div>
+    <div class="spacer"></div>
+    <a href="qbr.html"><span class="material-symbols-outlined">analytics</span> Full QBR view</a>
+    <a href="index.html"><span class="material-symbols-outlined">home</span> Index</a>
+  </div>
+
+  <div class="directional-warn">
+    <span class="material-symbols-outlined">science</span>
+    <div><strong>Prototype:</strong> Numbers are directional placeholders pending real ZoomInfo Sales data extraction.</div>
+  </div>
+
+  <div class="inbox">
+
+    <!-- ── Email metadata header (inbox chrome) ── -->
+    <div class="inbox-header">
+      <div class="email-subject" id="email-subject">+30% YTD share growth — your April G2 recap inside</div>
+      <div class="email-preview" id="email-preview">...plus 9 competitive races worth your team's attention this month</div>
+      <div class="email-meta">
+        <div class="from-avatar" id="from-avatar">JC</div>
+        <div class="from-block">
+          <div class="from-name" id="from-name">Jordan Chen <span style="color:#6f6d78; font-weight:500;">· your G2 CSM</span></div>
+          <div class="from-email">jordan.chen@g2.com → admin@zoominfo.com</div>
+        </div>
+        <div class="email-date">May 1, 2026 · 8:00 AM</div>
+      </div>
+    </div>
+
+    <!-- ── Email body ── -->
+    <div class="email-body">
+      <div class="email-content">
+
+        <!-- Cover (compressed: period as small label, title only) -->
+        <div class="email-cover">
+          <div class="email-period-label" id="period-label">April 2026 · Monthly G2 recap</div>
+          <div class="email-title">
+            How <span class="accent" id="cust-name">ZoomInfo Sales</span> performed on G2
+          </div>
+        </div>
+
+        <!-- Hero narrative -->
+        <div class="email-hero">
+          <div class="email-hero-label">The 30-second story</div>
+          <p class="email-hero-narrative" id="hero-narrative">
+            Loading…
+          </p>
+        </div>
+
+        <!-- Big stat: Reach -->
+        <div class="email-big-stat">
+          <div class="email-stat-label">Buyers researching you in April</div>
+          <div class="email-stat-value">
+            <span id="reach-value">3,842</span>
+            <span class="email-stat-delta" id="reach-delta">
+              <span class="material-symbols-outlined">trending_up</span>
+              +12.3%
+            </span>
+          </div>
+          <div class="email-stat-context" id="reach-context">
+            Up from 3,421 in March. 18.2% share of all Sales Intelligence research on G2.
+          </div>
+        </div>
+
+        <!-- 3-col stat strip (each cell links to the corresponding QBR section) -->
+        <div class="email-stat-strip">
+          <div class="email-stat-strip-inner">
+            <a class="stat-cell" href="qbr.html#section-trend">
+              <div class="stat-cell-label">Category share</div>
+              <div class="stat-cell-value" id="share-value">18.2%</div>
+              <div class="stat-cell-delta up" id="share-delta">+30% YTD</div>
+            </a>
+            <a class="stat-cell" href="qbr.html#section-competitive">
+              <div class="stat-cell-label">Competitive overlap</div>
+              <div class="stat-cell-value" id="overlap-value">9</div>
+              <div class="stat-cell-delta" id="overlap-delta" style="color:#ff492c;">orgs at risk</div>
+            </a>
+            <a class="stat-cell" id="third-cell" href="qbr.html#section-outcomes">
+              <div class="stat-cell-label" id="third-cell-label">Pipeline influenced</div>
+              <div class="stat-cell-value" id="third-cell-value">$1.28M</div>
+              <div class="stat-cell-delta up" id="third-cell-delta">+36% MoM</div>
+            </a>
+          </div>
+        </div>
+
+        <!-- Top 3 by intent score -->
+        <div class="email-section">
+          <div class="email-section-title">Top 3 to act on this week</div>
+          <div class="email-section-subtitle">Ranked by this month's intent score</div>
+          <div id="hot-list"></div>
+          <a class="see-all-link" href="qbr.html#section-engaged-orgs">
+            See all <span id="see-all-count">23</span> high-intent orgs <span class="material-symbols-outlined">arrow_forward</span>
+          </a>
+        </div>
+
+        <!-- Competitive alert -->
+        <div style="padding: 0 0 24px;">
+          <div class="competitive-alert">
+            <div class="competitive-alert-header">
+              <span class="material-symbols-outlined">warning</span>
+              <span id="competitive-header-text">9 races to fight this month</span>
+            </div>
+            <div class="competitive-alert-title">Buyer orgs researching you AND competitors</div>
+            <div id="competitive-list">
+              <!-- populated with stacked rows -->
+            </div>
+          </div>
+        </div>
+
+        <!-- YTD trend -->
+        <div class="ytd-section">
+          <div class="ytd-eyebrow">YTD trajectory · Jan – Apr 2026</div>
+          <div class="ytd-value" id="ytd-value">+30%</div>
+          <div class="ytd-yoy-pill" id="ytd-yoy-pill">
+            +30% this year vs. −3% same period last year
+          </div>
+          <div class="ytd-label" id="ytd-label">
+            Your share of all Sales Intelligence research on G2 grew from 14% to 18% YTD — a 30% jump in your slice of category attention.
+          </div>
+        </div>
+
+        <!-- CTA -->
+        <div class="email-cta-wrap">
+          <div class="email-cta-text">See the full breakdown, walk it through with your team, or share with sales leadership.</div>
+          <a href="qbr.html" class="email-cta-button">See the full breakdown</a>
+          <a href="#" class="email-cta-secondary">↓ Download as PDF for your QBR deck</a>
+        </div>
+
+        <!-- Footer -->
+        <div class="email-footer">
+          <div class="email-footer-brand">
+            <div class="brand-mark" style="width:18px; height:18px; font-size:10px;">G</div>
+            G<span style="color:#ff492c;">2</span> · Buyer Intent
+          </div>
+          <div>
+            You're receiving this because you're an admin on ZoomInfo Sales' G2 profile.<br>
+            Adjust cadence · <a href="#">monthly recap settings</a> · <a href="#">unsubscribe</a>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+
+  <script>
+    function fmt(n) {
+      if (n === null || n === undefined) return '—';
+      if (n >= 1_000_000) return n.toLocaleString();
+      if (n >= 1_000) return n.toLocaleString();
+      return n.toString();
+    }
+    function fmtCurrency(n) {
+      if (n >= 1_000_000) return '$' + (n / 1_000_000).toFixed(2) + 'M';
+      if (n >= 1_000) return '$' + (n / 1_000).toFixed(0) + 'K';
+      return '$' + n;
+    }
+    function fmtPct(n) { return (n >= 0 ? '+' : '') + n.toFixed(1) + '%'; }
+
+    fetch('data.json')
+      .then(r => r.json())
+      .then(render)
+      .catch(err => console.error(err));
+
+    function render(data) {
+      document.getElementById('cust-name').textContent = data.customer.name;
+      document.getElementById('period-label').textContent = `${data.report_period.label} · Monthly G2 recap`;
+      // Subject + preview pulled from data (insight-led, not generic)
+      const ytdPct = Math.round(data.layers.trend.ytd_delta_pct);
+      const competitorCount = data.layers.competitive_context.engaged_orgs_with_competitor_research;
+      const monthShort = data.report_period.label.split(' ')[0];
+      document.getElementById('email-subject').textContent =
+        `+${ytdPct}% YTD share growth — your ${monthShort} G2 recap inside`;
+      document.getElementById('email-preview').textContent =
+        `...plus ${competitorCount} competitive races worth your team's attention this month`;
+      // Customize from-block per CSM (uses customer.csm)
+      if (data.customer.csm) {
+        const csmInitials = data.customer.csm.split(' ').map(w => w[0]).join('').toUpperCase();
+        document.getElementById('from-avatar').textContent = csmInitials;
+        document.getElementById('from-name').innerHTML =
+          `${data.customer.csm} <span style="color:#6f6d78; font-weight:500;">· your G2 CSM</span>`;
+      }
+
+      // Hero
+      document.getElementById('hero-narrative').innerHTML = data.headline.narrative
+        .replace(/(\d{1,3}(?:,\d{3})*) buyers/, '<strong>$1 buyers</strong>')
+        .replace(/(\d+(?:\.\d+)?%) share/, '<strong>$1 share</strong>')
+        .replace(/(\d+) of your most-engaged buyer organizations/, '<strong>$1 of your most-engaged buyer organizations</strong>');
+
+      // Reach
+      const r = data.layers.reach;
+      document.getElementById('reach-value').textContent = fmt(r.current);
+      document.getElementById('reach-delta').innerHTML =
+        `<span class="material-symbols-outlined">${r.delta_pct >= 0 ? 'trending_up' : 'trending_down'}</span> ${fmtPct(r.delta_pct)}`;
+      document.getElementById('reach-context').textContent =
+        `Up from ${fmt(r.previous)} in March. ${(r.category_share * 100).toFixed(1)}% share of all ${data.customer.main_category.replace(' Software','')} research on G2.`;
+
+      // 3-col strip
+      document.getElementById('share-value').textContent = data.layers.trend.ytd_current_value.toFixed(1) + '%';
+      document.getElementById('share-delta').textContent = `+${data.layers.trend.ytd_delta_pct.toFixed(0)}% YTD`;
+
+      document.getElementById('overlap-value').textContent = data.layers.competitive_context.engaged_orgs_with_competitor_research;
+
+      // Third cell: pipeline if CRM connected, otherwise fall back to high-intent orgs
+      const thirdCell = document.getElementById('third-cell');
+      if (data.layers.outcomes.crm_connected) {
+        const pipeline = data.layers.outcomes.metrics.find(m => m.key === 'opps_value');
+        document.getElementById('third-cell-label').textContent = 'Pipeline influenced';
+        document.getElementById('third-cell-value').textContent = fmtCurrency(pipeline.current);
+        document.getElementById('third-cell-delta').textContent = fmtPct(pipeline.delta_pct) + ' MoM';
+        document.getElementById('third-cell-delta').className = 'stat-cell-delta up';
+        thirdCell.href = 'qbr.html#section-outcomes';
+      } else {
+        // Fallback: show high-intent orgs (CRM-free, universally available)
+        document.getElementById('third-cell-label').textContent = 'High-intent orgs';
+        document.getElementById('third-cell-value').textContent = data.layers.engaged_orgs.high_intent_count;
+        document.getElementById('third-cell-delta').textContent = `score ≥ ${data.layers.engaged_orgs.intent_score_threshold}`;
+        document.getElementById('third-cell-delta').className = 'stat-cell-delta';
+        document.getElementById('third-cell-delta').style.color = '#6f6d78';
+        thirdCell.href = 'qbr.html#section-engaged-orgs';
+      }
+
+      // Top 3 buyer orgs by intent score (single source of truth: engaged_orgs)
+      const top3 = [...data.layers.engaged_orgs.top_organizations]
+        .sort((a, b) => b.intent_score - a.intent_score)
+        .slice(0, 3);
+      // Each row links to the org's section in the QBR view (would be a real product URL in prod)
+      document.getElementById('hot-list').innerHTML = top3.map(h => `
+        <a class="hot-row" href="qbr.html#section-engaged-orgs">
+          <div class="hot-row-logo">${h.name.charAt(0)}</div>
+          <div class="hot-row-main">
+            <div class="hot-row-name">${h.name}</div>
+            <div class="hot-row-signal">${h.signals} signals from ${h.researcher_count} researchers${h.competitors_present.length ? ` · <span style="color:#ff492c; font-weight:600;">Also researching ${h.competitors_present.join(', ')}</span>` : ''}</div>
+          </div>
+          <div class="hot-row-score">${h.intent_score}</div>
+        </a>
+      `).join('');
+      // See-all link shows the total high-intent org count
+      document.getElementById('see-all-count').textContent = data.layers.engaged_orgs.high_intent_count;
+
+      // Competitive — stacked clickable rows
+      const comp = data.layers.competitive_context;
+      document.getElementById('competitive-header-text').textContent =
+        `${comp.engaged_orgs_with_competitor_research} races to fight this month`;
+      document.getElementById('competitive-list').innerHTML = comp.named_accounts_at_risk.map(a => `
+        <a class="competitive-alert-row" href="qbr.html#section-competitive">
+          <div class="competitive-alert-name">${a.name}</div>
+          <div class="competitive-alert-vs">also researching <strong>${a.competitors.join(', ')}</strong></div>
+          <div class="competitive-alert-arrow"><span class="material-symbols-outlined">arrow_forward</span></div>
+        </a>
+      `).join('');
+
+      // YTD
+      document.getElementById('ytd-value').textContent = fmtPct(data.layers.trend.ytd_delta_pct);
+      document.getElementById('ytd-label').textContent = data.layers.trend.narrative;
+      if (data.layers.trend.yoy_comparator) {
+        document.getElementById('ytd-yoy-pill').textContent = data.layers.trend.yoy_comparator.narrative;
+      } else {
+        document.getElementById('ytd-yoy-pill').style.display = 'none';
+      }
+    }
+  </script>
+</body>
+</html>

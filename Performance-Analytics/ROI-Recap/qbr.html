@@ -1,0 +1,1197 @@
+<!DOCTYPE html>
+<html lang="en" style="scroll-behavior:smooth;">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Buyer Intent ROI Recap — ZoomInfo Sales · April 2026</title>
+  <link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet" />
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --rorange:        #ff492c;
+      --rorange-light:  #fff6f5;
+      --rorange-mid:    #ffd7d1;
+      --purple:         #5746b2;
+      --purple-5:       #f5f4fb;
+      --purple-10:      #f2f0f9;
+      --purple-20:      #ebe9f6;
+      --purple-30:      #dedaf1;
+      --purple-40:      #c3bde5;
+      --purple-80:      #7769c4;
+      --purple-120:     #45388f;
+      --midnight:       #201f23;
+
+      --n0:   #ffffff;
+      --n1:   #fcfcfd;
+      --n5:   #fafafa;
+      --n10:  #f2f2f3;
+      --n20:  #dfdfe2;
+      --n40:  #b0afb6;
+      --n70:  #6f6d78;
+      --n80:  #4c4b53;
+      --n100: #201f23;
+
+      --text-default:      #201f23;
+      --text-subtle:       #4c4b53;
+      --text-nonessential: #6f6d78;
+      --border-light:      #dfdfe2;
+
+      --green:         #1fa896;
+      --green-20:      #d0f6f1;
+      --green-bg:      #ecfbf8;
+      --green-160:     #0f5249;
+      --red:           #eb2000;
+      --red-bg:        #fde9e6;
+      --blue:          #0073f5;
+      --blue-bg:       #dbecff;
+      --amber:         #b58a00;
+      --amber-bg:      #fff5d6;
+
+      --data-primary:   #5746b2;
+      --data-tint1:     #7769c4;
+      --data-tint2:     #988ed2;
+      --data-tint3:     #c3bde5;
+      --data-tint4:     #dedaf1;
+
+      --shadow-sm: 0 1px 2px rgba(32,31,35,0.04), 0 1px 3px rgba(32,31,35,0.06);
+      --shadow-md: 0 4px 6px -1px rgba(32,31,35,0.06), 0 2px 4px -2px rgba(32,31,35,0.06);
+      --shadow-lg: 0 10px 15px -3px rgba(32,31,35,0.08), 0 4px 6px -4px rgba(32,31,35,0.06);
+
+      --content-max: 920px;
+    }
+
+    body {
+      font-family: 'Figtree', -apple-system, BlinkMacSystemFont, sans-serif;
+      font-size: 15px;
+      color: var(--text-default);
+      background: var(--n5);
+      line-height: 1.55;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ── Top action bar ── */
+    .actionbar {
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      background: var(--n0);
+      border-bottom: 1px solid var(--border-light);
+      padding: 12px 0;
+    }
+    .actionbar-inner {
+      max-width: var(--content-max);
+      margin: 0 auto;
+      padding: 0 32px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-weight: 700;
+      font-size: 14px;
+    }
+    .brand-mark {
+      width: 28px; height: 28px;
+      background: var(--rorange);
+      border-radius: 6px;
+      display: flex; align-items: center; justify-content: center;
+      color: #fff; font-weight: 900; font-size: 14px;
+    }
+    .brand-text { color: var(--midnight); }
+    .brand-text span { color: var(--rorange); }
+    .actionbar-spacer { flex: 1; }
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 8px 14px;
+      font-family: inherit;
+      font-size: 13px;
+      font-weight: 600;
+      border-radius: 8px;
+      border: 1px solid var(--border-light);
+      background: var(--n0);
+      color: var(--text-default);
+      cursor: pointer;
+      transition: all 0.15s;
+      text-decoration: none;
+    }
+    .btn:hover { background: var(--n10); border-color: var(--n40); }
+    .btn-primary {
+      background: var(--purple);
+      color: #fff;
+      border-color: var(--purple);
+    }
+    .btn-primary:hover { background: var(--purple-120); border-color: var(--purple-120); }
+    .btn .material-symbols-outlined { font-size: 16px; }
+
+    /* ── Cover ── */
+    .container {
+      max-width: var(--content-max);
+      margin: 0 auto;
+      padding: 0 32px 80px;
+    }
+    .cover {
+      padding: 56px 0 32px;
+      border-bottom: 1px solid var(--border-light);
+    }
+    .cover-eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      color: var(--purple);
+      background: var(--purple-10);
+      padding: 6px 12px;
+      border-radius: 9999px;
+      margin-bottom: 20px;
+    }
+    .cover-title {
+      font-size: 40px;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      line-height: 1.1;
+      color: var(--midnight);
+      margin-bottom: 12px;
+    }
+    .cover-customer {
+      color: var(--purple);
+    }
+    .cover-period {
+      font-size: 17px;
+      color: var(--text-subtle);
+      margin-bottom: 28px;
+    }
+    .cover-meta {
+      display: flex;
+      gap: 32px;
+      font-size: 13px;
+      color: var(--text-nonessential);
+    }
+    .cover-meta-item { display: flex; flex-direction: column; gap: 2px; }
+    .cover-meta-label {
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--n40);
+    }
+    .cover-meta-value {
+      color: var(--text-default);
+      font-weight: 600;
+    }
+
+    /* ── Hero / Headline ── */
+    .hero {
+      padding: 40px 0 24px;
+      border-bottom: 1px solid var(--border-light);
+    }
+    .hero-label {
+      font-size: 12px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--n40);
+      margin-bottom: 12px;
+    }
+    .hero-narrative {
+      font-size: 22px;
+      font-weight: 500;
+      line-height: 1.4;
+      letter-spacing: -0.01em;
+      color: var(--midnight);
+    }
+    .hero-narrative strong {
+      font-weight: 700;
+      color: var(--purple);
+    }
+
+    /* ── Section ── */
+    .section {
+      padding: 48px 0 24px;
+      border-bottom: 1px solid var(--border-light);
+    }
+    .section:last-of-type { border-bottom: none; }
+    .section-header {
+      display: flex;
+      align-items: flex-start;
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+    .section-num {
+      width: 32px; height: 32px;
+      border-radius: 8px;
+      background: var(--purple-10);
+      color: var(--purple);
+      display: flex; align-items: center; justify-content: center;
+      font-weight: 800;
+      font-size: 14px;
+      flex-shrink: 0;
+    }
+    .section-titlewrap { flex: 1; }
+    .section-title {
+      font-size: 22px;
+      font-weight: 700;
+      letter-spacing: -0.01em;
+      color: var(--midnight);
+      margin-bottom: 4px;
+    }
+    .section-subtitle {
+      font-size: 14px;
+      color: var(--text-subtle);
+    }
+    .section-pill {
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      padding: 4px 10px;
+      border-radius: 9999px;
+      flex-shrink: 0;
+    }
+    .section-pill.unlock {
+      background: var(--green-bg);
+      color: var(--green-160);
+    }
+    .section-pill.optional {
+      background: var(--n10);
+      color: var(--n70);
+    }
+
+    /* ── Big stat ── */
+    .big-stat {
+      display: flex;
+      align-items: baseline;
+      gap: 16px;
+      margin-bottom: 16px;
+    }
+    .big-stat-value {
+      font-size: 56px;
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      line-height: 1;
+      color: var(--midnight);
+    }
+    .delta-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      font-size: 14px;
+      font-weight: 700;
+      padding: 4px 10px;
+      border-radius: 9999px;
+    }
+    .delta-chip.up { background: var(--green-bg); color: var(--green-160); }
+    .delta-chip.down { background: var(--red-bg); color: var(--red); }
+    .delta-chip.flat { background: var(--n10); color: var(--n70); }
+    .delta-chip .material-symbols-outlined { font-size: 16px; }
+
+    .stat-context {
+      font-size: 14px;
+      color: var(--text-subtle);
+      margin-bottom: 24px;
+    }
+    .stat-context strong { color: var(--text-default); font-weight: 600; }
+
+    /* ── Cards / Grid ── */
+    .card {
+      background: var(--n0);
+      border: 1px solid var(--border-light);
+      border-radius: 12px;
+      padding: 20px;
+    }
+    .card-grid {
+      display: grid;
+      gap: 12px;
+      margin-bottom: 20px;
+    }
+    .card-grid-2 { grid-template-columns: repeat(2, 1fr); }
+    .card-grid-3 { grid-template-columns: repeat(3, 1fr); }
+    .card-grid-4 { grid-template-columns: repeat(4, 1fr); }
+
+    .metric-card {
+      background: var(--n0);
+      border: 1px solid var(--border-light);
+      border-radius: 12px;
+      padding: 18px;
+    }
+    .metric-card.highlight {
+      background: linear-gradient(180deg, var(--purple-10) 0%, var(--n0) 60%);
+      border-color: var(--purple-30);
+    }
+    .metric-card-label {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text-nonessential);
+      margin-bottom: 8px;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+    .metric-card-value {
+      font-size: 28px;
+      font-weight: 800;
+      color: var(--midnight);
+      letter-spacing: -0.02em;
+      line-height: 1.1;
+      margin-bottom: 6px;
+    }
+    .metric-card-delta {
+      font-size: 12px;
+      font-weight: 600;
+    }
+    .metric-card-delta.up { color: var(--green-160); }
+    .metric-card-delta.down { color: var(--red); }
+    .metric-card-delta.flat { color: var(--n70); }
+
+    /* Hero metric variant — bigger, more visual weight */
+    .metric-card.hero { padding: 22px; }
+    .metric-card.hero .metric-card-value { font-size: 36px; }
+
+    /* Secondary metric variant — compact strip below hero */
+    .metric-strip {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 0;
+      background: var(--n0);
+      border: 1px solid var(--border-light);
+      border-radius: 12px;
+      overflow: hidden;
+      margin-top: 12px;
+      margin-bottom: 20px;
+    }
+    .metric-strip-cell {
+      padding: 14px 18px;
+      border-right: 1px solid var(--border-light);
+    }
+    .metric-strip-cell:last-child { border-right: none; }
+    .metric-strip-label {
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--text-nonessential);
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      margin-bottom: 4px;
+    }
+    .metric-strip-value {
+      font-size: 20px;
+      font-weight: 800;
+      color: var(--midnight);
+      letter-spacing: -0.02em;
+      line-height: 1.1;
+    }
+    .metric-strip-delta {
+      font-size: 11px;
+      font-weight: 600;
+      margin-top: 2px;
+    }
+    .metric-strip-delta.up { color: var(--green-160); }
+    .metric-strip-delta.down { color: var(--red); }
+    .metric-strip-delta.flat { color: var(--n70); }
+
+    /* ── Chart wrappers ── */
+    .chart-wrap {
+      background: var(--n0);
+      border: 1px solid var(--border-light);
+      border-radius: 12px;
+      padding: 20px;
+      margin-bottom: 20px;
+    }
+    .chart-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      margin-bottom: 20px;
+    }
+    .chart-title {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-subtle);
+      margin-bottom: 12px;
+    }
+    .chart-canvas { position: relative; height: 220px; }
+
+    /* ── Engaged orgs list ── */
+    .engaged-orgs-meta {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 13px;
+      color: var(--text-subtle);
+      margin-bottom: 14px;
+    }
+    .engaged-orgs-meta strong { color: var(--midnight); font-weight: 700; }
+    .engaged-orgs-meta .material-symbols-outlined { font-size: 16px; color: var(--rorange); }
+    .act-now-banner {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      background: linear-gradient(135deg, var(--rorange-light) 0%, #fff 100%);
+      border: 1px solid var(--rorange-mid);
+      border-left: 4px solid var(--rorange);
+      border-radius: 10px;
+      padding: 12px 16px;
+      margin-bottom: 14px;
+      font-size: 14px;
+      color: var(--text-default);
+      line-height: 1.5;
+    }
+    .act-now-banner .material-symbols-outlined {
+      font-size: 20px;
+      color: var(--rorange);
+      flex-shrink: 0;
+    }
+    .act-now-banner strong { color: var(--rorange); font-weight: 700; }
+    #act-now-names { font-weight: 600; color: var(--midnight); }
+    .org-list {
+      background: var(--n0);
+      border: 1px solid var(--border-light);
+      border-radius: 12px;
+      overflow: hidden;
+    }
+    .org-row {
+      display: grid;
+      grid-template-columns: 36px 1fr auto auto auto;
+      align-items: center;
+      gap: 16px;
+      padding: 14px 18px;
+      border-top: 1px solid var(--border-light);
+      transition: background 0.15s;
+    }
+    .org-row:first-child { border-top: none; }
+    .org-row:hover { background: var(--n5); }
+    .org-logo {
+      width: 36px; height: 36px;
+      border-radius: 8px;
+      background: var(--purple-10);
+      color: var(--purple);
+      display: flex; align-items: center; justify-content: center;
+      font-weight: 800;
+      font-size: 14px;
+    }
+    .org-main { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+    .org-name {
+      font-weight: 700;
+      color: var(--text-default);
+      font-size: 15px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .org-competitor-warn {
+      display: inline-flex;
+      align-items: center;
+      gap: 3px;
+      font-size: 10px;
+      font-weight: 700;
+      padding: 2px 6px;
+      border-radius: 4px;
+      background: var(--rorange-light);
+      color: var(--rorange);
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+    .org-competitor-warn .material-symbols-outlined { font-size: 12px; }
+    .org-meta {
+      font-size: 12px;
+      color: var(--text-nonessential);
+    }
+    .org-signals {
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--purple);
+      text-align: right;
+      min-width: 80px;
+    }
+    .org-signals-label {
+      font-size: 10px;
+      color: var(--text-nonessential);
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      margin-top: -1px;
+    }
+    .intent-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      font-size: 12px;
+      font-weight: 700;
+      padding: 4px 10px;
+      border-radius: 9999px;
+    }
+    .intent-pill.hot { background: var(--rorange-light); color: var(--rorange); }
+    .intent-pill.warm { background: #fff5d6; color: #876600; }
+    .intent-pill.cool { background: var(--n10); color: var(--n70); }
+    .intent-pill .material-symbols-outlined { font-size: 14px; }
+
+    /* ── Competitive callout ── */
+    .competitor-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 12px;
+      margin-top: 20px;
+    }
+    .competitor-card {
+      background: var(--n0);
+      border: 1px solid var(--border-light);
+      border-radius: 10px;
+      padding: 14px 16px;
+    }
+    .competitor-name {
+      font-weight: 700;
+      font-size: 14px;
+      color: var(--text-default);
+      margin-bottom: 4px;
+    }
+    .competitor-stat {
+      font-size: 12px;
+      color: var(--text-subtle);
+    }
+    .competitor-stat strong { color: var(--rorange); }
+
+    /* At-risk hero (promoted from a subdued list to the section's centerpiece) */
+    .at-risk-hero {
+      background: linear-gradient(135deg, var(--rorange-light) 0%, #fff 100%);
+      border: 1px solid var(--rorange-mid);
+      border-left: 4px solid var(--rorange);
+      border-radius: 14px;
+      padding: 28px 28px 8px;
+      margin-bottom: 24px;
+      box-shadow: var(--shadow-md);
+    }
+    .at-risk-eyebrow {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 12px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--rorange);
+      margin-bottom: 8px;
+    }
+    .at-risk-eyebrow .material-symbols-outlined { font-size: 18px; }
+    .at-risk-title {
+      font-size: 24px;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      line-height: 1.2;
+      color: var(--midnight);
+      margin-bottom: 4px;
+    }
+    .at-risk-title strong { color: var(--rorange); }
+    .at-risk-subtitle {
+      font-size: 14px;
+      color: var(--text-subtle);
+      margin-bottom: 20px;
+    }
+    .at-risk-items-list { padding: 4px 0; }
+    .at-risk-item {
+      display: grid;
+      grid-template-columns: auto 1fr auto;
+      align-items: center;
+      gap: 16px;
+      padding: 14px 0;
+      border-top: 1px solid var(--rorange-mid);
+    }
+    .at-risk-item:first-child { border-top: none; }
+    .at-risk-name {
+      font-weight: 700;
+      color: var(--text-default);
+      font-size: 16px;
+    }
+    .at-risk-vs {
+      color: var(--text-subtle);
+      font-size: 13px;
+      line-height: 1.4;
+    }
+    .at-risk-vs strong { color: var(--midnight); font-weight: 600; }
+    .at-risk-cta {
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--rorange);
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      padding: 6px 10px;
+      border: 1px solid var(--rorange-mid);
+      border-radius: 6px;
+      background: #fff;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+    .at-risk-cta:hover { background: var(--rorange); color: #fff; border-color: var(--rorange); }
+
+    /* Section 4 supporting context (smaller competitor cards below the hero) */
+    .competitor-context-label {
+      font-size: 12px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--text-nonessential);
+      margin-bottom: 10px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .competitor-context-label .material-symbols-outlined { font-size: 14px; }
+
+    /* ── Trend hero ── */
+    .trend-hero {
+      background: linear-gradient(135deg, var(--purple) 0%, var(--purple-120) 100%);
+      color: #fff;
+      border-radius: 16px;
+      padding: 36px 32px;
+      margin-bottom: 20px;
+    }
+    .trend-label {
+      font-size: 12px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      opacity: 0.75;
+      margin-bottom: 12px;
+    }
+    .trend-stat {
+      display: flex;
+      align-items: baseline;
+      gap: 16px;
+      margin-bottom: 14px;
+    }
+    .trend-value {
+      font-size: 56px;
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      line-height: 1;
+    }
+    .trend-suffix {
+      font-size: 22px;
+      font-weight: 600;
+      opacity: 0.8;
+    }
+    .trend-yoy {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(255,255,255,0.12);
+      border: 1px solid rgba(255,255,255,0.2);
+      border-radius: 9999px;
+      padding: 6px 14px;
+      font-size: 13px;
+      font-weight: 600;
+      margin-bottom: 18px;
+    }
+    .trend-yoy .material-symbols-outlined { font-size: 16px; }
+    .trend-narrative {
+      font-size: 16px;
+      line-height: 1.5;
+      opacity: 0.95;
+      max-width: 640px;
+    }
+
+    /* ── Next steps ── */
+    .next-steps {
+      background: var(--midnight);
+      color: #fff;
+      border-radius: 16px;
+      padding: 36px 32px;
+      margin-top: 24px;
+    }
+    .next-steps-title {
+      font-size: 18px;
+      font-weight: 700;
+      margin-bottom: 18px;
+    }
+    .next-steps-list { list-style: none; padding: 0; }
+    .next-steps-list li {
+      display: flex;
+      gap: 14px;
+      padding: 12px 0;
+      font-size: 15px;
+      line-height: 1.5;
+      border-bottom: 1px solid rgba(255,255,255,0.1);
+    }
+    .next-steps-list li:last-child { border-bottom: none; }
+    .next-steps-num {
+      flex-shrink: 0;
+      width: 24px; height: 24px;
+      background: rgba(255,255,255,0.1);
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-weight: 700;
+      font-size: 12px;
+    }
+
+    /* ── Provenance flag ── */
+    .provenance-note {
+      margin-top: 14px;
+      font-size: 11px;
+      color: var(--n40);
+      font-style: italic;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .provenance-note .material-symbols-outlined { font-size: 13px; }
+    .directional-warn {
+      background: var(--amber-bg);
+      border: 1px solid #ecd994;
+      color: var(--amber);
+      padding: 12px 18px;
+      border-radius: 10px;
+      font-size: 12px;
+      max-width: var(--content-max);
+      margin: 16px auto 0;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .directional-warn .material-symbols-outlined { font-size: 18px; }
+
+    /* ── Narrative block ── */
+    .narrative {
+      font-size: 15px;
+      line-height: 1.6;
+      color: var(--text-subtle);
+      max-width: 720px;
+      margin-top: 16px;
+    }
+
+    /* ── Mobile ── */
+    @media (max-width: 720px) {
+      .container { padding: 0 20px 60px; }
+      .actionbar-inner { padding: 0 20px; }
+      .cover { padding: 32px 0 24px; }
+      .cover-title { font-size: 28px; }
+      .cover-meta { flex-wrap: wrap; gap: 16px; }
+      .big-stat-value { font-size: 40px; }
+      .chart-row { grid-template-columns: 1fr; }
+      .card-grid-3, .card-grid-4 { grid-template-columns: repeat(2, 1fr); }
+      .trend-value { font-size: 40px; }
+      .hero-narrative { font-size: 18px; }
+      .acct-row { grid-template-columns: 1fr auto; gap: 8px; }
+      .acct-row .acct-meta { display: none; }
+    }
+
+    @media print {
+      .actionbar { display: none; }
+      .next-steps { background: var(--n10); color: var(--text-default); }
+      .next-steps-num { background: var(--purple); }
+      .trend-hero { background: var(--purple-10); color: var(--midnight); }
+      .trend-narrative { opacity: 1; }
+      .section { page-break-inside: avoid; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="actionbar">
+    <div class="actionbar-inner">
+      <div class="brand">
+        <div class="brand-mark">G</div>
+        <div class="brand-text">G<span>2</span> · Buyer Intent</div>
+      </div>
+      <div class="actionbar-spacer"></div>
+      <button class="btn" onclick="window.print()">
+        <span class="material-symbols-outlined">picture_as_pdf</span> Save as PDF
+      </button>
+      <a class="btn" href="email.html">
+        <span class="material-symbols-outlined">mail</span> View as email
+      </a>
+      <button class="btn btn-primary">
+        <span class="material-symbols-outlined">share</span> Share with team
+      </button>
+    </div>
+  </div>
+
+  <div class="directional-warn">
+    <span class="material-symbols-outlined">science</span>
+    <div><strong>Prototype:</strong> All numbers are directional placeholders. Real ZoomInfo Sales data will be swapped in from <code>buyer_intent_api</code> + <code>ue/</code> once local DB infra is up.</div>
+  </div>
+
+  <div class="container">
+
+    <!-- ── Cover ── -->
+    <header class="cover">
+      <div class="cover-eyebrow">
+        <span class="material-symbols-outlined" style="font-size:14px;">auto_awesome</span>
+        Monthly Buyer Intent ROI Recap
+      </div>
+      <h1 class="cover-title">
+        How <span class="cover-customer" data-bind="customer.name">ZoomInfo Sales</span> performed on G2
+      </h1>
+      <div class="cover-period" data-bind="report_period.label">April 2026</div>
+      <div class="cover-meta">
+        <div class="cover-meta-item">
+          <div class="cover-meta-label">Category</div>
+          <div class="cover-meta-value" data-bind="customer.main_category">Sales Intelligence Software</div>
+        </div>
+        <div class="cover-meta-item">
+          <div class="cover-meta-label">License since</div>
+          <div class="cover-meta-value" data-bind="customer.license_start">2024-09-15</div>
+        </div>
+        <div class="cover-meta-item">
+          <div class="cover-meta-label">CSM</div>
+          <div class="cover-meta-value" data-bind="customer.csm">Jordan Chen</div>
+        </div>
+        <div class="cover-meta-item">
+          <div class="cover-meta-label">Tier</div>
+          <div class="cover-meta-value" data-bind="customer.tier">Premium</div>
+        </div>
+      </div>
+    </header>
+
+    <!-- ── Hero / one-line narrative ── -->
+    <section class="hero">
+      <div class="hero-label">The 30-second story</div>
+      <p class="hero-narrative" id="hero-narrative">
+        In April, G2 surfaced <strong>3,842 buyers</strong> researching ZoomInfo Sales or Sales Intelligence — <strong>19% of them</strong> match your audience profile. Meanwhile, <strong>9 of your most-engaged accounts</strong> are also being researched by competitors right now.
+      </p>
+    </section>
+
+    <!-- ── Section 1: Reach ── -->
+    <section class="section" id="section-reach">
+      <div class="section-header">
+        <div class="section-num">1</div>
+        <div class="section-titlewrap">
+          <div class="section-title">Buyers researching you</div>
+          <div class="section-subtitle">Unique buyer organizations that viewed ZoomInfo Sales or competitive content on G2</div>
+        </div>
+      </div>
+      <div class="big-stat">
+        <div class="big-stat-value" data-bind="layers.reach.current" data-format="number">3,842</div>
+        <div class="delta-chip up" id="reach-delta">
+          <span class="material-symbols-outlined">trending_up</span>
+          +12.3% vs. March
+        </div>
+      </div>
+      <div class="stat-context" id="reach-context">
+        That's <strong>18.2% share</strong> of all Sales Intelligence research on G2 this month — up from 16.7% last month. YTD: <strong>14,893</strong> buyers across Jan–Apr.
+      </div>
+      <div class="chart-wrap">
+        <div class="chart-title">Buyers researching you · last 5 months</div>
+        <div class="chart-canvas"><canvas id="reach-chart"></canvas></div>
+      </div>
+    </section>
+
+    <!-- ── Section 2: Top buyer organizations researching you ── -->
+    <section class="section" id="section-engaged-orgs">
+      <div class="section-header">
+        <div class="section-num">2</div>
+        <div class="section-titlewrap">
+          <div class="section-title">Top buyer organizations researching you</div>
+          <div class="section-subtitle">The companies generating the most intent signals on G2 this month</div>
+        </div>
+      </div>
+      <div class="engaged-orgs-meta" id="engaged-orgs-meta">
+        <!-- populated: 'X high-intent orgs out of Y total' -->
+      </div>
+      <div class="act-now-banner">
+        <span class="material-symbols-outlined">bolt</span>
+        <div>
+          <strong>Top 3 to act on this week:</strong>
+          <span id="act-now-names">Salesforce · ServiceNow · Workday</span>
+          — highest intent scores this month, ranked at the top of the list below.
+        </div>
+      </div>
+      <div class="org-list" id="org-list"></div>
+    </section>
+
+    <!-- ── Section 3: Outcomes (CRM-optional) — renumbered from 4 ── -->
+    <section class="section" id="section-outcomes">
+      <div class="section-header">
+        <div class="section-num">3</div>
+        <div class="section-titlewrap">
+          <div class="section-title">Pipeline &amp; deals from these accounts</div>
+          <div class="section-subtitle">What's happened in your CRM on accounts G2 surfaced</div>
+        </div>
+        <div class="section-pill optional">CRM bonus</div>
+      </div>
+      <div class="card-grid card-grid-3" id="outcomes-grid"></div>
+      <div class="metric-strip" id="outcomes-strip"></div>
+      <p class="narrative" id="outcomes-narrative"></p>
+    </section>
+
+    <!-- ── Section 4: Competitive context — renumbered from 5 ── -->
+    <section class="section" id="section-competitive">
+      <div class="section-header">
+        <div class="section-num">4</div>
+        <div class="section-titlewrap">
+          <div class="section-title">You're not the only one in these races</div>
+          <div class="section-subtitle">Buyer organizations researching you AND competitors in your category this month</div>
+        </div>
+      </div>
+      <div class="at-risk-hero">
+        <div class="at-risk-eyebrow">
+          <span class="material-symbols-outlined">warning</span>
+          <span id="at-risk-count-label">9 races to fight this month</span>
+        </div>
+        <div class="at-risk-title"><strong>Named buyer orgs</strong> researching you AND competitors</div>
+        <div class="at-risk-subtitle">These are the deals where speed and positioning matter most this month.</div>
+        <div class="at-risk-items-list" id="at-risk-items"></div>
+      </div>
+      <div class="competitor-context-label">
+        <span class="material-symbols-outlined">groups</span>
+        Where the competition is concentrated
+      </div>
+      <p class="narrative" id="competitive-narrative" style="margin-top:0; margin-bottom:14px;"></p>
+      <div class="competitor-grid" id="competitor-grid"></div>
+    </section>
+
+    <!-- ── Section 5: Trend — renumbered from 6 ── -->
+    <section class="section" id="section-trend">
+      <div class="section-header">
+        <div class="section-num">5</div>
+        <div class="section-titlewrap">
+          <div class="section-title">The YTD story</div>
+          <div class="section-subtitle">One number to anchor the QBR conversation</div>
+        </div>
+      </div>
+      <div class="trend-hero">
+        <div class="trend-label" id="trend-label">Year-to-date · Your share of category research</div>
+        <div class="trend-stat">
+          <div class="trend-value" id="trend-value">+30%</div>
+          <div class="trend-suffix">growth since January</div>
+        </div>
+        <div class="trend-yoy" id="trend-yoy">
+          <span class="material-symbols-outlined">compare_arrows</span>
+          <span id="trend-yoy-text">+30% YTD this year vs. −3% same period last year</span>
+        </div>
+        <div class="trend-narrative" id="trend-narrative"></div>
+      </div>
+    </section>
+
+    <!-- ── Next steps ── -->
+    <section>
+      <div class="next-steps">
+        <div class="next-steps-title">Suggested next steps</div>
+        <ol class="next-steps-list" id="next-steps-list"></ol>
+      </div>
+    </section>
+
+  </div>
+
+  <script>
+    // Load data and render
+    fetch('data.json')
+      .then(r => r.json())
+      .then(data => render(data))
+      .catch(err => {
+        console.error('Failed to load data.json', err);
+        document.body.insertAdjacentHTML('afterbegin',
+          '<div style="background:#fde9e6;color:#eb2000;padding:16px;font-family:system-ui;">Failed to load data.json — open this file via a local server (e.g. <code>python3 -m http.server</code>) or via GitHub Pages.</div>');
+      });
+
+    function fmt(n) {
+      if (n === null || n === undefined) return '—';
+      if (Math.abs(n) >= 1_000_000) return '$' + (n / 1_000_000).toFixed(1) + 'M';
+      if (Math.abs(n) >= 1_000) return n.toLocaleString();
+      return n.toString();
+    }
+    function fmtCurrency(n) {
+      if (n >= 1_000_000) return '$' + (n / 1_000_000).toFixed(2) + 'M';
+      if (n >= 1_000) return '$' + (n / 1_000).toFixed(0) + 'K';
+      return '$' + n;
+    }
+    function fmtPct(n) { return (n >= 0 ? '+' : '') + n.toFixed(1) + '%'; }
+    function deltaClass(d) { return d > 0 ? 'up' : d < 0 ? 'down' : 'flat'; }
+    function deltaIcon(d) { return d > 0 ? 'trending_up' : d < 0 ? 'trending_down' : 'trending_flat'; }
+
+    function render(data) {
+      // Bind simple text fields
+      document.querySelectorAll('[data-bind]').forEach(el => {
+        const path = el.dataset.bind.split('.');
+        let v = data;
+        for (const k of path) v = v?.[k];
+        if (v !== undefined && v !== null) el.textContent = v;
+      });
+
+      // Hero narrative
+      document.getElementById('hero-narrative').innerHTML = data.headline.narrative
+        .replace(/(\d{1,3}(?:,\d{3})*) buyers/, '<strong>$1 buyers</strong>')
+        .replace(/(\d+(?:\.\d+)?%) share/, '<strong>$1 share</strong>')
+        .replace(/(\d+) of your most-engaged buyer organizations/, '<strong>$1 of your most-engaged buyer organizations</strong>');
+
+      // ── Reach ──
+      const reach = data.layers.reach;
+      document.querySelector('#section-reach .big-stat-value').textContent = fmt(reach.current);
+      const rDelta = document.getElementById('reach-delta');
+      rDelta.className = 'delta-chip ' + deltaClass(reach.delta_pct);
+      rDelta.innerHTML = `<span class="material-symbols-outlined">${deltaIcon(reach.delta_pct)}</span> ${fmtPct(reach.delta_pct)} vs. March`;
+      document.getElementById('reach-context').innerHTML =
+        `That's <strong>${(reach.category_share * 100).toFixed(1)}% share</strong> of all ${data.customer.main_category.replace(' Software','')} research on G2 this month. YTD: <strong>${fmt(reach.ytd)}</strong> buyers across Jan–Apr.`;
+
+      // Reach sparkline
+      new Chart(document.getElementById('reach-chart'), {
+        type: 'line',
+        data: {
+          labels: reach.sparkline_labels,
+          datasets: [{
+            data: reach.sparkline,
+            borderColor: '#5746b2',
+            backgroundColor: 'rgba(87,70,178,0.12)',
+            fill: true,
+            tension: 0.35,
+            pointBackgroundColor: '#5746b2',
+            pointRadius: 4,
+            pointHoverRadius: 6,
+            borderWidth: 2
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: { legend: { display: false } },
+          scales: {
+            y: { beginAtZero: false, grid: { color: '#f2f2f3' }, ticks: { color: '#6f6d78', font: { size: 11 } } },
+            x: { grid: { display: false }, ticks: { color: '#6f6d78', font: { size: 11 } } }
+          }
+        }
+      });
+
+      // ── Engaged orgs section ──
+      const eo = data.layers.engaged_orgs;
+
+      document.getElementById('engaged-orgs-meta').innerHTML = `
+        <span class="material-symbols-outlined">local_fire_department</span>
+        <span><strong>${eo.high_intent_count}</strong> high-intent orgs (score ≥ ${eo.intent_score_threshold}) out of <strong>${eo.total_engaged_orgs.toLocaleString()}</strong> total this month</span>
+      `;
+
+      // Top 3 by intent score for the "act now" banner
+      const top3ByIntent = [...eo.top_organizations]
+        .sort((a, b) => b.intent_score - a.intent_score)
+        .slice(0, 3)
+        .map(o => o.name);
+      document.getElementById('act-now-names').textContent = top3ByIntent.join(' · ');
+
+      function intentClass(score) {
+        if (score >= 80) return 'hot';
+        if (score >= 65) return 'warm';
+        return 'cool';
+      }
+
+      document.getElementById('org-list').innerHTML = eo.top_organizations.map(o => `
+        <div class="org-row">
+          <div class="org-logo">${o.name.charAt(0)}</div>
+          <div class="org-main">
+            <div class="org-name">
+              ${o.name}
+              ${o.competitors_present.length ? `
+                <span class="org-competitor-warn">
+                  <span class="material-symbols-outlined">warning</span>
+                  vs ${o.competitors_present.join(', ')}
+                </span>
+              ` : ''}
+            </div>
+            <div class="org-meta">${o.industry} · ${o.domain} · ${o.researcher_count} researchers</div>
+          </div>
+          <div>
+            <div class="org-signals">${o.signals}</div>
+            <div class="org-signals-label">signals</div>
+          </div>
+          <div class="delta-chip ${deltaClass(o.delta_pct)}" style="font-size:11px; padding:2px 8px;">
+            <span class="material-symbols-outlined" style="font-size:13px;">${deltaIcon(o.delta_pct)}</span>
+            ${fmtPct(o.delta_pct)}
+          </div>
+          <div class="intent-pill ${intentClass(o.intent_score)}">
+            <span class="material-symbols-outlined">local_fire_department</span>
+            ${o.intent_score}
+          </div>
+        </div>
+      `).join('');
+
+      // ── Outcomes ──
+      const out = data.layers.outcomes;
+      if (out.crm_connected) {
+        const heroMetrics = out.metrics.filter(m => m.tier === 'hero');
+        const secondaryMetrics = out.metrics.filter(m => m.tier === 'secondary');
+
+        document.getElementById('outcomes-grid').innerHTML = heroMetrics.map(m => {
+          const val = m.format === 'currency' ? fmtCurrency(m.current) : fmt(m.current);
+          const colorDelta = m.good_when === 'down' ? -m.delta_pct : m.delta_pct;
+          return `
+            <div class="metric-card hero">
+              <div class="metric-card-label">${m.label}</div>
+              <div class="metric-card-value">${val}</div>
+              <div class="metric-card-delta ${deltaClass(colorDelta)}">${fmtPct(m.delta_pct)} vs. last month</div>
+            </div>
+          `;
+        }).join('');
+
+        document.getElementById('outcomes-strip').innerHTML = secondaryMetrics.map(m => {
+          const val = m.format === 'currency' ? fmtCurrency(m.current) : fmt(m.current);
+          const colorDelta = m.good_when === 'down' ? -m.delta_pct : m.delta_pct;
+          return `
+            <div class="metric-strip-cell">
+              <div class="metric-strip-label">${m.label}</div>
+              <div class="metric-strip-value">${val}</div>
+              <div class="metric-strip-delta ${deltaClass(colorDelta)}">${fmtPct(m.delta_pct)} MoM</div>
+            </div>
+          `;
+        }).join('');
+
+        document.getElementById('outcomes-narrative').textContent = out.narrative;
+      } else {
+        document.getElementById('section-outcomes').innerHTML = `
+          <div class="section-header">
+            <div class="section-num">3</div>
+            <div class="section-titlewrap">
+              <div class="section-title">Pipeline &amp; deals from these accounts</div>
+              <div class="section-subtitle">${out.no_crm_fallback}</div>
+            </div>
+          </div>
+          <div class="card" style="background:var(--purple-10); border-color:var(--purple-30);">
+            <p style="font-weight:600; color:var(--purple-120);">
+              <span class="material-symbols-outlined" style="vertical-align:middle;">link</span>
+              Connect your CRM to unlock pipeline-level ROI
+            </p>
+          </div>
+        `;
+      }
+
+      // ── Competitive ──
+      const comp = data.layers.competitive_context;
+      document.getElementById('at-risk-count-label').textContent =
+        `${comp.engaged_orgs_with_competitor_research} races to fight this month`;
+      document.getElementById('competitive-narrative').textContent = comp.narrative;
+      document.getElementById('competitor-grid').innerHTML = comp.top_competitors.map(c => `
+        <div class="competitor-card">
+          <div class="competitor-name">${c.name}</div>
+          <div class="competitor-stat"><strong>${c.orgs_overlap}</strong> shared buyer orgs</div>
+        </div>
+      `).join('');
+      document.getElementById('at-risk-items').innerHTML = comp.named_accounts_at_risk.map(a => `
+        <div class="at-risk-item">
+          <div class="at-risk-name">${a.name}</div>
+          <div class="at-risk-vs">also researching <strong>${a.competitors.join(', ')}</strong></div>
+          <button class="at-risk-cta">View signals →</button>
+        </div>
+      `).join('');
+
+      // ── Trend ──
+      const t = data.layers.trend;
+      document.getElementById('trend-label').textContent = `Year-to-date · ${t.metric_label}`;
+      document.getElementById('trend-value').textContent = fmtPct(t.ytd_delta_pct);
+      document.getElementById('trend-narrative').textContent = t.narrative;
+      if (t.yoy_comparator) {
+        document.getElementById('trend-yoy-text').textContent = t.yoy_comparator.narrative;
+      } else {
+        document.getElementById('trend-yoy').style.display = 'none';
+      }
+
+      // ── Next steps ──
+      document.getElementById('next-steps-list').innerHTML = data.next_steps.map((s, i) => `
+        <li><span class="next-steps-num">${i + 1}</span>${s}</li>
+      `).join('');
+    }
+  </script>
+</body>
+</html>

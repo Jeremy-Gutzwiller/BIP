@@ -1,0 +1,134 @@
+{
+  "_note": "All numbers below are DIRECTIONAL placeholders pending real data extraction from ue/ + buyer_intent_api/. Schema is stable; values will be swapped 1:1 once Jeremy stands up colima + docker-compose locally and seeds the DBs from prod replica. See ~/.claude/plans/okay-so-let-s-work-gentle-stardust.md for the framework.",
+  "customer": {
+    "name": "ZoomInfo Sales",
+    "slug": "zoominfo-sales",
+    "main_category": "Sales Intelligence Software",
+    "tier": "Premium",
+    "license_start": "2024-09-15",
+    "csm": "Jordan Chen"
+  },
+  "report_period": {
+    "label": "April 2026",
+    "from": "2026-04-01",
+    "to": "2026-04-30",
+    "comparison_label": "vs. March 2026"
+  },
+  "ytd_period": {
+    "label": "Year-to-date · Jan – Apr 2026",
+    "from": "2026-01-01",
+    "to": "2026-04-30"
+  },
+  "headline": {
+    "narrative": "In April, G2 surfaced 3,842 buyers researching ZoomInfo Sales or Sales Intelligence — that's an 18.2% share of all research in your category, up from 14% YTD. Meanwhile, 9 of your most-engaged buyer organizations are also being researched by competitors right now.",
+    "primary_stat": {
+      "value": 3842,
+      "label": "Buyers researching you in April"
+    }
+  },
+  "layers": {
+    "reach": {
+      "id": "reach",
+      "label": "Buyers researching you",
+      "subtitle": "Unique buyer organizations that viewed ZoomInfo Sales or competitive content on G2",
+      "current": 3842,
+      "previous": 3421,
+      "delta_pct": 12.3,
+      "ytd": 14893,
+      "category_share": 0.182,
+      "category_share_label": "18.2% share of all Sales Intelligence research on G2",
+      "sparkline": [2890, 3105, 3340, 3421, 3842],
+      "sparkline_labels": ["Dec", "Jan", "Feb", "Mar", "Apr"],
+      "provenance": "directional",
+      "real_source": "buyer_intent_api: Interactions filtered to ZoomInfo Sales product + Sales Intelligence category, distinct visitor_organization_id"
+    },
+    "engaged_orgs": {
+      "id": "engaged_orgs",
+      "label": "Top buyer organizations researching you",
+      "subtitle": "The companies generating the most intent signals on G2 this month — sorted by signal volume",
+      "_note": "Replaces the original 'Audience match' framing because BuyerIntent::Audience is sparsely configured today (Audience Builder is the in-flight project to fix this). This list uses raw signal volume per org — universally available, no Audience dependency.",
+      "total_engaged_orgs": 712,
+      "intent_score_threshold": 70,
+      "high_intent_count": 23,
+      "top_organizations": [
+        { "name": "Salesforce", "domain": "salesforce.com", "industry": "Software", "signals": 47, "researcher_count": 12, "intent_score": 92, "delta_pct": 142, "competitors_present": ["Apollo.io", "LeadIQ"] },
+        { "name": "ServiceNow", "domain": "servicenow.com", "industry": "Software", "signals": 38, "researcher_count": 9, "intent_score": 88, "delta_pct": 95, "competitors_present": [] },
+        { "name": "Workday", "domain": "workday.com", "industry": "Software", "signals": 31, "researcher_count": 8, "intent_score": 81, "delta_pct": 24, "competitors_present": ["Apollo.io"] },
+        { "name": "Atlassian", "domain": "atlassian.com", "industry": "Software", "signals": 27, "researcher_count": 7, "intent_score": 74, "delta_pct": 67, "competitors_present": [] },
+        { "name": "Snowflake", "domain": "snowflake.com", "industry": "Software", "signals": 25, "researcher_count": 6, "intent_score": 71, "delta_pct": -12, "competitors_present": ["Cognism"] },
+        { "name": "Databricks", "domain": "databricks.com", "industry": "Software", "signals": 22, "researcher_count": 6, "intent_score": 68, "delta_pct": 18, "competitors_present": [] },
+        { "name": "HubSpot", "domain": "hubspot.com", "industry": "Software", "signals": 19, "researcher_count": 5, "intent_score": 65, "delta_pct": 35, "competitors_present": [] },
+        { "name": "Notion", "domain": "notion.so", "industry": "Software", "signals": 18, "researcher_count": 4, "intent_score": 62, "delta_pct": 0, "competitors_present": [] }
+      ],
+      "provenance": "directional",
+      "real_source": "buyer_intent_api: Interactions GROUP BY organization_id ORDER BY count(*) DESC LIMIT 10 — intent_score from IntentDrivenLeads::UnlockedCompany; competitors_present from co-research join"
+    },
+    "outcomes": {
+      "id": "outcomes",
+      "label": "Pipeline & deals from these accounts",
+      "subtitle": "What's happened in your CRM on accounts G2 surfaced",
+      "crm_connected": true,
+      "crm_type": "Salesforce",
+      "_note": "All fields below correspond to verified real fields in BuyerIntentInfluenceSummary. No fabricated metrics.",
+      "metrics": [
+        { "key": "opps_value", "label": "Pipeline influenced", "current": 1280000, "previous": 940000, "delta_pct": 36.2, "format": "currency", "real_field": "total_amount_deals_influenced_by_g2", "tier": "hero" },
+        { "key": "closed_won_value", "label": "Closed-won revenue", "current": 245000, "previous": 180000, "delta_pct": 36.1, "format": "currency", "real_field": "total_amount_deals_closed_won_influenced_by_g2", "tier": "hero" },
+        { "key": "sourced_value", "label": "Sourced directly by G2", "current": 88000, "previous": 60000, "delta_pct": 46.7, "format": "currency", "real_field": "total_deals_created_by_g2_amount", "tier": "hero" },
+        { "key": "opps_influenced", "label": "Opportunities influenced", "current": 11, "previous": 8, "delta_pct": 37.5, "real_field": "total_deals_influenced_by_g2", "tier": "secondary" },
+        { "key": "closed_won", "label": "Closed-won deals", "current": 3, "previous": 2, "delta_pct": 50.0, "real_field": "total_deals_closed_won_influenced_by_g2", "tier": "secondary" },
+        { "key": "days_to_close", "label": "Avg sales cycle (days)", "current": 42, "previous": 51, "delta_pct": -17.6, "real_field": "total_days_to_close_deals_influenced_by_g2", "good_when": "down", "tier": "secondary" }
+      ],
+      "narrative": "Pipeline influenced from G2-surfaced accounts grew 36% MoM. Sales cycles on these deals are also shortening (42 days vs. 51 last month) — suggesting buyers who research on G2 first arrive more qualified.",
+      "no_crm_fallback": "Connect your CRM to see how these signals translate into pipeline and closed-won revenue.",
+      "provenance": "directional",
+      "real_source": "ue: Integrations::Insights::Salesforce::Insights → BuyerIntentInfluenceSummary"
+    },
+    "competitive_context": {
+      "id": "competitive_context",
+      "label": "You're not the only one in these races",
+      "subtitle": "Buyer organizations researching you AND competitors in your category this month",
+      "_note": "Reframed away from 'target accounts' since G2 has no target-account feature. Now reports against orgs researching ZoomInfo Sales — a real, queryable set.",
+      "engaged_orgs_with_competitor_research": 9,
+      "engaged_orgs_total": 712,
+      "competitor_share_pct": 1.3,
+      "top_competitors": [
+        { "name": "Apollo.io", "orgs_overlap": 7, "share_pct": 35 },
+        { "name": "Cognism", "orgs_overlap": 5, "share_pct": 25 },
+        { "name": "LeadIQ", "orgs_overlap": 4, "share_pct": 20 },
+        { "name": "Lusha", "orgs_overlap": 3, "share_pct": 15 }
+      ],
+      "named_accounts_at_risk": [
+        { "name": "Salesforce", "competitors": ["Apollo.io", "LeadIQ"] },
+        { "name": "Snowflake", "competitors": ["Cognism"] },
+        { "name": "Workday", "competitors": ["Apollo.io"] }
+      ],
+      "narrative": "9 buyer organizations researching ZoomInfo Sales this month are also actively researching at least one competitor on G2. Salesforce, Snowflake, and Workday are showing the strongest competitive overlap.",
+      "provenance": "directional",
+      "real_source": "buyer_intent_api: Interactions joined across competitor products in Sales Intelligence category via CategoryProductAggregate"
+    },
+    "trend": {
+      "id": "trend",
+      "label": "The YTD story",
+      "subtitle": "One number to anchor the QBR conversation",
+      "metric_label": "Your share of category research on G2",
+      "ytd_start_value": 14.0,
+      "ytd_current_value": 18.2,
+      "ytd_delta_pp": 4.2,
+      "ytd_delta_pct": 30.0,
+      "yoy_comparator": {
+        "current_year_delta_pct": 30.0,
+        "prior_year_delta_pct": -3.1,
+        "narrative": "+30% YTD this year vs. −3% same period last year"
+      },
+      "narrative": "Your share of all Sales Intelligence research on G2 grew from 14% to 18% YTD — a 30% jump in your slice of category attention. By contrast, same period last year you were trending slightly down. This is the cleanest signal that G2 is delivering more of your category to you, not less.",
+      "provenance": "directional",
+      "real_source": "buyer_intent_api: Interactions count(distinct org) for vendor's product / count(distinct org) across all products in category — month-over-month with YoY comparison via DateDimension historicals"
+    }
+  },
+  "next_steps": [
+    "Review the 9 buyer organizations where competitors are also showing up — Salesforce, Snowflake, and Workday are the most contested",
+    "Forward this recap to your sales leadership before the next pipeline review",
+    "Use your +30% YTD category-share growth as your QBR opener — it's the cleanest measure of G2 delivering more of your category's attention to you",
+    "Open Buyer Intent and filter to your 23 high-intent orgs to start outreach this week"
+  ]
+}

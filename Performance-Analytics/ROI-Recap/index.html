@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Buyer Intent ROI Recap — Prototype</title>
+  <link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --rorange: #ff492c;
+      --purple: #5746b2;
+      --purple-120: #45388f;
+      --purple-10: #f2f0f9;
+      --midnight: #201f23;
+      --n5: #fafafa;
+      --n10: #f2f2f3;
+      --n20: #dfdfe2;
+      --n70: #6f6d78;
+      --n80: #4c4b53;
+    }
+    body {
+      font-family: 'Figtree', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: var(--n5);
+      color: var(--midnight);
+      -webkit-font-smoothing: antialiased;
+      line-height: 1.5;
+    }
+    .wrap {
+      max-width: 920px;
+      margin: 0 auto;
+      padding: 48px 32px 80px;
+    }
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 40px;
+    }
+    .brand-mark {
+      width: 32px; height: 32px;
+      background: var(--rorange);
+      border-radius: 7px;
+      display: flex; align-items: center; justify-content: center;
+      color: #fff; font-weight: 900; font-size: 15px;
+    }
+    .brand-text {
+      font-size: 15px;
+      font-weight: 700;
+    }
+    .brand-text span { color: var(--rorange); }
+
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      color: var(--purple);
+      background: var(--purple-10);
+      padding: 6px 12px;
+      border-radius: 9999px;
+      margin-bottom: 20px;
+    }
+    h1 {
+      font-size: 40px;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      line-height: 1.1;
+      margin-bottom: 16px;
+    }
+    .lede {
+      font-size: 18px;
+      line-height: 1.5;
+      color: var(--n80);
+      max-width: 720px;
+      margin-bottom: 32px;
+    }
+    .lede strong { color: var(--midnight); }
+
+    .alert {
+      background: #fff5d6;
+      border: 1px solid #ecd994;
+      color: #876600;
+      padding: 14px 18px;
+      border-radius: 10px;
+      font-size: 13px;
+      margin-bottom: 40px;
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      line-height: 1.5;
+    }
+    .alert .material-symbols-outlined { font-size: 18px; color: #b58a00; flex-shrink: 0; }
+
+    .surfaces {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 20px;
+      margin-bottom: 48px;
+    }
+    .surface-card {
+      background: #fff;
+      border: 1px solid var(--n20);
+      border-radius: 14px;
+      padding: 28px;
+      text-decoration: none;
+      color: var(--midnight);
+      display: block;
+      transition: all 0.15s;
+    }
+    .surface-card:hover {
+      border-color: var(--purple);
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px rgba(87,70,178,0.12);
+    }
+    .surface-icon {
+      width: 44px; height: 44px;
+      border-radius: 10px;
+      background: var(--purple-10);
+      color: var(--purple);
+      display: flex; align-items: center; justify-content: center;
+      margin-bottom: 16px;
+    }
+    .surface-icon .material-symbols-outlined { font-size: 24px; }
+    .surface-title {
+      font-size: 18px;
+      font-weight: 700;
+      margin-bottom: 6px;
+    }
+    .surface-desc {
+      font-size: 13px;
+      color: var(--n80);
+      line-height: 1.5;
+      margin-bottom: 14px;
+    }
+    .surface-link {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--purple);
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+    .surface-link .material-symbols-outlined { font-size: 16px; }
+
+    h2 {
+      font-size: 20px;
+      font-weight: 700;
+      margin-bottom: 16px;
+      letter-spacing: -0.01em;
+    }
+    .framework {
+      background: #fff;
+      border: 1px solid var(--n20);
+      border-radius: 14px;
+      overflow: hidden;
+      margin-bottom: 32px;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13px;
+    }
+    th, td {
+      padding: 12px 18px;
+      text-align: left;
+      border-bottom: 1px solid var(--n20);
+    }
+    th {
+      background: var(--n10);
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--n70);
+    }
+    tr:last-child td { border-bottom: none; }
+    td .num {
+      font-weight: 800;
+      color: var(--purple);
+      margin-right: 4px;
+    }
+    .highlight-row {
+      background: linear-gradient(90deg, rgba(87,70,178,0.04) 0%, transparent 100%);
+    }
+    .highlight-row td { font-weight: 600; }
+    .pill {
+      font-size: 10px;
+      font-weight: 700;
+      padding: 2px 8px;
+      border-radius: 9999px;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+    .pill-no { background: #ecfbf8; color: #0f5249; }
+    .pill-bonus { background: var(--n10); color: var(--n70); }
+
+    .context {
+      background: #fff;
+      border: 1px solid var(--n20);
+      border-radius: 14px;
+      padding: 24px 28px;
+      margin-bottom: 32px;
+    }
+    .context h3 {
+      font-size: 14px;
+      font-weight: 700;
+      margin-bottom: 12px;
+      color: var(--midnight);
+    }
+    .context p {
+      font-size: 13px;
+      line-height: 1.6;
+      color: var(--n80);
+      margin-bottom: 12px;
+    }
+    .context p:last-child { margin-bottom: 0; }
+    .context strong { color: var(--midnight); }
+
+    .footer {
+      margin-top: 48px;
+      padding-top: 24px;
+      border-top: 1px solid var(--n20);
+      font-size: 12px;
+      color: var(--n70);
+    }
+
+    @media (max-width: 720px) {
+      .wrap { padding: 32px 20px 60px; }
+      h1 { font-size: 28px; }
+      .lede { font-size: 16px; }
+      .surfaces { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="wrap">
+
+    <div class="brand">
+      <div class="brand-mark">G</div>
+      <div class="brand-text">G<span>2</span> · Buyer Intent · Prototype</div>
+    </div>
+
+    <div class="eyebrow">
+      <span class="material-symbols-outlined" style="font-size:14px;">auto_awesome</span>
+      Prototype · BIP
+    </div>
+    <h1>Monthly Buyer Intent ROI Recap</h1>
+    <p class="lede">
+      A churn-mitigation surface for G2 Buyer Intent customers. <strong>Reframes ROI from lagging attribution ("deals influenced by G2") to leading signal value ("here are the buyers researching you, who matches your ICP, and where competitors are showing up").</strong>
+      Designed to work without CRM connection and to give CSMs a renewal-ready story.
+    </p>
+
+    <div class="alert">
+      <span class="material-symbols-outlined">science</span>
+      <div><strong>All numbers in the prototype are directional placeholders</strong> — schema is stable; values will be swapped in 1:1 once the local DB infra (colima + docker-compose) is up and ZoomInfo Sales data is extracted from <code>ue/</code> + <code>buyer_intent_api/</code>.</div>
+    </div>
+
+    <div class="surfaces">
+
+      <a href="email.html" class="surface-card">
+        <div class="surface-icon"><span class="material-symbols-outlined">mark_email_read</span></div>
+        <div class="surface-title">Monthly email recap</div>
+        <div class="surface-desc">Delivered to the inbox the 1st of every month. Headline metrics + top accounts to act on. Meets customers where they live — no need to remember to visit a dashboard.</div>
+        <span class="surface-link">View email mockup <span class="material-symbols-outlined">arrow_forward</span></span>
+      </a>
+
+      <a href="qbr.html" class="surface-card">
+        <div class="surface-icon"><span class="material-symbols-outlined">co_present</span></div>
+        <div class="surface-title">QBR / landing page</div>
+        <div class="surface-desc">Linked from the email. The full six-layer story, designed for the CSM to walk a customer through during renewal — the moment churn is actually decided.</div>
+        <span class="surface-link">View QBR page <span class="material-symbols-outlined">arrow_forward</span></span>
+      </a>
+
+    </div>
+
+    <h2>The metric framework</h2>
+    <div class="framework">
+      <table>
+        <thead>
+          <tr>
+            <th>Layer</th>
+            <th>Metric</th>
+            <th>CRM?</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><span class="num">1</span>Reach</td>
+            <td>Buyers researching you / your category</td>
+            <td><span class="pill pill-no">No</span></td>
+          </tr>
+          <tr>
+            <td><span class="num">2</span>Top buyer orgs</td>
+            <td>Ranked list of organizations generating the most intent signals on G2</td>
+            <td><span class="pill pill-no">No</span></td>
+          </tr>
+          <tr>
+            <td><span class="num">3</span>Outcomes</td>
+            <td>Pipeline influenced, closed-won revenue, sourced-by-G2 (CRM-connected bonus)</td>
+            <td><span class="pill pill-bonus">Bonus</span></td>
+          </tr>
+          <tr>
+            <td><span class="num">4</span>Competitive</td>
+            <td>Buyer orgs researching you AND competitors — the at-risk races</td>
+            <td><span class="pill pill-no">No</span></td>
+          </tr>
+          <tr>
+            <td><span class="num">5</span>Trend</td>
+            <td>YTD category share growth + YoY comparator</td>
+            <td><span class="pill pill-no">No</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="context">
+      <h3>Why this exists</h3>
+      <p>Buyer Intent customers churn because they don't feel ROI from the product. The existing Performance Analytics page is the previous team's attempt — it isn't used often. Three root causes Jeremy validated:</p>
+      <p><strong>1. Attribution disbelief</strong> — "deals influenced by G2" math isn't trusted.<br>
+      <strong>2. CRM-integration gate</strong> — customers churn before ever reaching the ROI page.<br>
+      <strong>3. CSMs / day-to-day users aren't feeling it</strong> — page isn't surfaced in renewals or workflow.</p>
+      <p>The reframe: <strong>shift the story from "deals we closed for you" to "buyers we surfaced, who they match, and who else is in the race."</strong> Sidesteps attribution disbelief by reporting on what's verifiable (signal volume, ICP match, competitive overlap) rather than what's contested (causation in closed deals). Works whether or not the customer has connected a CRM.</p>
+      <p style="font-size:12px; color:var(--n70); margin-top:14px;">
+        <strong>What's deliberately not in v1:</strong> "What your team did in G2" (buyer report views, contacts downloaded, etc.) was originally proposed as the strongest counter to attribution disbelief — but a data audit confirmed G2 doesn't currently instrument vendor-admin actions. Building that data layer is a separate ~1-2 week instrumentation project; cut from the prototype to avoid promising data we don't have.
+      </p>
+    </div>
+
+    <div class="footer">
+      Plan file: <code>~/.claude/plans/okay-so-let-s-work-gentle-stardust.md</code> · Data: <a href="data.json" style="color:var(--purple);">data.json</a> · Demo customer: ZoomInfo Sales
+    </div>
+
+  </div>
+
+</body>
+</html>
